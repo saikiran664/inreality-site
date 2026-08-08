@@ -1,0 +1,136 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { BrandMark } from "@/components/BrandMark";
+import { GlassX } from "@/components/GlassX";
+import { Grain } from "@/components/Grain";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+const STORAGE_KEY = "inreality-intro-seen";
+
+/**
+ * Brand-site intro: wordmark + glass mark only, no client lockup, and
+ * deliberately short — people revisit a brand site, so the splash has to
+ * get out of the way fast.
+ */
+export function IntroSplash() {
+  const [phase, setPhase] = useState<"pending" | "intro" | "done">("pending");
+  const [step, setStep] = useState<"enter" | "zoom">("enter");
+
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const seen = sessionStorage.getItem(STORAGE_KEY);
+
+    if (seen || reduced) {
+      sessionStorage.setItem(STORAGE_KEY, "1");
+      setPhase("done");
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    setPhase("intro");
+  }, []);
+
+  useEffect(() => {
+    const replay = () => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      document.body.style.overflow = "hidden";
+      setStep("enter");
+      setPhase("intro");
+    };
+    window.addEventListener("inreality:replay-intro", replay);
+    return () => window.removeEventListener("inreality:replay-intro", replay);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "intro") return;
+    const toZoom = setTimeout(() => setStep("zoom"), 950);
+    const toDone = setTimeout(finish, 1850);
+    return () => {
+      clearTimeout(toZoom);
+      clearTimeout(toDone);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
+  function finish() {
+    sessionStorage.setItem(STORAGE_KEY, "1");
+    document.body.style.overflow = "";
+    setPhase("done");
+  }
+
+  const zooming = step === "zoom";
+
+  return (
+    <AnimatePresence>
+      {phase === "intro" && (
+        <motion.div
+          key="intro"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[100]"
+        >
+          {/* Plain node drives the iris wipe with a native CSS transition —
+              crisp at any size because it masks rather than scales pixels. */}
+          <div
+            onClick={finish}
+            className="relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden bg-void"
+            style={{
+              clipPath: zooming ? "circle(0% at 50% 50%)" : "circle(150% at 50% 50%)",
+              transition: "clip-path 0.85s cubic-bezier(0.76,0,0.24,1)",
+            }}
+          >
+            <div className="gradient-field" />
+            <Grain />
+
+            <div className="relative flex flex-col items-center gap-5 px-6 sm:gap-7">
+              <motion.div
+                initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
+                animate={{
+                  opacity: zooming ? 0 : 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                transition={{ duration: 0.6, ease: EASE, delay: 0.08 }}
+              >
+                <BrandMark height={38} className="sm:!text-[58px] md:!text-[72px]" />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.35 }}
+                animate={{
+                  opacity: zooming ? [1, 1, 0] : 1,
+                  scale: zooming ? 9 : 1,
+                }}
+                transition={
+                  zooming
+                    ? { duration: 0.85, ease: [0.66, 0, 0.34, 1], times: [0, 0.5, 1] }
+                    : { duration: 0.6, ease: EASE, delay: 0.3 }
+                }
+                style={{ willChange: "transform", transform: "translateZ(0)" }}
+              >
+                {/* Built at 4x and scaled down, so the zoom stays sharp. */}
+                <GlassX size={64} renderSize={300} slices={15} />
+              </motion.div>
+            </div>
+
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: zooming ? 0 : 0.4 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="absolute bottom-9 px-6 text-center font-body text-[10px] font-extrabold uppercase tracking-[0.3em] text-paper sm:text-[11px] sm:tracking-[0.35em]"
+            >
+              Tap to skip
+            </motion.span>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
