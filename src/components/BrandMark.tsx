@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * The In.Reality wordmark.
+ * The InReality wordmark.
  *
  * Prefers the real artwork at `public/logo.png`. Falls back to the Oilvare
  * logotype (bundled via next/font in layout.tsx) and finally to Anton.
@@ -34,7 +34,7 @@ export function BrandMark({
         style={{ fontSize: height, fontFamily: "var(--font-logo)" }}
         className={`leading-none tracking-[0.02em] ${className}`}
       >
-        IN.REALITY
+        INREALITY
       </span>
     );
   }
@@ -44,7 +44,7 @@ export function BrandMark({
     <img
       ref={imgRef}
       src="/logo.png"
-      alt="In.Reality"
+      alt="InReality"
       style={{ height }}
       onError={() => setFailed(true)}
       className={`w-auto select-none ${keepColor ? "" : "brightness-0 invert"} ${className}`}

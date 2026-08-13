@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useCurveScroll } from "@/hooks/useCurveScroll";
 import { arcPath, arcPoints } from "@/lib/curve";
@@ -12,6 +12,34 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const ARC = { cx: -40, cy: 450, radius: 540, startDeg: -52, endDeg: 52 };
 
+const VB = { width: 1400, height: 900 };
+/** Room reserved above/below a marker for its own radius and pulse ring. */
+const MARKER_PAD = 42;
+
+/**
+ * How far the markers may sweep, given the viewport.
+ *
+ * The band is meant to run off the top and bottom of the frame, and the
+ * viewBox is `slice`-cropped to achieve that. But `slice` scales to COVER,
+ * so the vertical crop grows with the viewport's aspect ratio — and at ±52°
+ * the outermost markers sat inside the cropped-away region and were simply
+ * never drawn on screen. Only six or seven of the eleven were ever visible.
+ *
+ * No fixed angle fixes this: the visible band keeps shrinking as the screen
+ * gets wider, so any constant eventually fails on an ultrawide monitor. This
+ * derives the safe half-sweep from the actual crop instead, so all eleven
+ * stay on screen at every aspect ratio.
+ */
+function safeHalfSweep(width: number, height: number) {
+  const scale = Math.max(width / VB.width, height / VB.height);
+  const cropUnits = Math.max(0, (VB.height * scale - height) / (2 * scale));
+  const halfSpan = VB.height / 2 - cropUnits - MARKER_PAD;
+  // asin's domain caps the sweep at 90°; the lower bound keeps the markers
+  // from collapsing onto one another on an absurdly wide window.
+  const ratio = Math.min(0.86, Math.max(0, halfSpan / ARC.radius));
+  return Math.max(14, (Math.asin(ratio) * 180) / Math.PI);
+}
+
 export function ServicesRibbon() {
   const items = SERVICES;
   const { wrapperRef, pinRef, activeIndex, wrapperHeight } = useCurveScroll(items.length);
@@ -20,7 +48,26 @@ export function ServicesRibbon() {
   const band = useMemo(() => arcPath(ARC), []);
   const outerA = useMemo(() => arcPath({ ...ARC, radius: 640, startDeg: -70, endDeg: 70 }), []);
   const outerB = useMemo(() => arcPath({ ...ARC, radius: 715, startDeg: -70, endDeg: 70 }), []);
-  const points = useMemo(() => arcPoints(items.length, ARC), [items.length]);
+  // Starts at the widest sweep the design allows and tightens on measure, so
+  // the server-rendered markup matches the client's first paint.
+  const [halfSweep, setHalfSweep] = useState(31);
+
+  useEffect(() => {
+    const measure = () =>
+      setHalfSweep(safeHalfSweep(window.innerWidth, window.innerHeight));
+    measure();
+    window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+    };
+  }, []);
+
+  const points = useMemo(
+    () => arcPoints(items.length, { ...ARC, startDeg: -halfSweep, endDeg: halfSweep }),
+    [items.length, halfSweep],
+  );
 
   const jumpTo = (i: number) => {
     const el = wrapperRef.current;
@@ -98,11 +145,10 @@ export function ServicesRibbon() {
                 }}
               >
                 {isActive && (
-                  <rect
-                    x={p.x - 30}
-                    y={p.y - 30}
-                    width={60}
-                    height={60}
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={30}
                     fill="none"
                     stroke="#ffffff"
                     strokeOpacity={0.9}
@@ -111,19 +157,21 @@ export function ServicesRibbon() {
                     style={{ transformOrigin: `${p.x}px ${p.y}px` }}
                   />
                 )}
-                {/* White fill + dark outline. The markers sit on the scarlet
-                    band, whose brightest stop is only 2.6:1 against white —
-                    the outline guarantees separation across every stop. */}
-                <rect
-                  x={p.x - s / 2}
-                  y={p.y - s / 2}
-                  width={s}
-                  height={s}
-                  rx={2}
-                  fill={isActive ? "#ffffff" : isDone ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)"}
-                  stroke="#07050f"
-                  strokeOpacity={0.55}
-                  strokeWidth={1.5}
+                {/* Progress fills FORWARD into scarlet: upcoming steps are
+                    white, completed ones burn orange.
+                    The ring colour has to switch with the fill. These sit on
+                    the scarlet band, so a dark outline separates a white dot
+                    but would disappear behind an orange one — the orange
+                    states take a white ring instead, which is the only thing
+                    that reads across every stop of the band. */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={s / 2}
+                  fill={isActive ? "#ff4000" : isDone ? "#ff7a3d" : "#ffffff"}
+                  stroke={isDone ? "#ffffff" : "#07050f"}
+                  strokeOpacity={isDone ? 0.95 : 0.55}
+                  strokeWidth={isDone ? 2 : 1.5}
                   style={{ transition: "all 0.4s cubic-bezier(.16,1,.3,1)" }}
                 />
               </g>
@@ -141,7 +189,7 @@ export function ServicesRibbon() {
             <p className="font-body text-[10px] font-extrabold uppercase tracking-[0.25em] text-scarlet sm:text-xs sm:tracking-[0.3em]">
               Our services
             </p>
-            <h2 className="mt-2 font-display text-[13vw] leading-[0.82] tracking-tight sm:mt-4 sm:text-6xl md:text-7xl lg:text-[6.5rem]">
+            <h2 className="mt-2 font-display text-[13vw] leading-display tracking-tight sm:mt-4 sm:text-6xl md:text-7xl lg:text-[6.5rem]">
               <span className="block text-paper">WE</span>
               <span className="block text-paper">BUILD</span>
               <span className="gradient-text block">INFLUENCE</span>

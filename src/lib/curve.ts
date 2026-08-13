@@ -36,6 +36,72 @@ export function arcPoints(count: number, opts: ArcOptions = {}): Point[] {
   });
 }
 
+export type HWaveOptions = {
+  width?: number;
+  height?: number;
+  amplitude?: number;
+  leftPad?: number;
+  rightPad?: number;
+  waves?: number;
+};
+
+/** Horizontal serpentine waypoints — the left-to-right journey arrow. */
+export function hWavePoints(count: number, opts: HWaveOptions = {}): Point[] {
+  const {
+    width = 1200,
+    height = 300,
+    amplitude = 78,
+    leftPad = 60,
+    rightPad = 90,
+    waves = 1.6,
+  } = opts;
+  const usable = width - leftPad - rightPad;
+  return Array.from({ length: count }, (_, i) => {
+    const t = count === 1 ? 0.5 : i / (count - 1);
+    return {
+      x: r3(leftPad + t * usable),
+      y: r3(height / 2 - Math.sin(t * Math.PI * waves) * amplitude),
+    };
+  });
+}
+
+/**
+ * Smooth path that passes exactly THROUGH every point (Catmull-Rom spline
+ * expressed as cubic beziers).
+ *
+ * The previous implementation emitted `Q <point> <midpoint>`, which makes
+ * each waypoint a quadratic CONTROL point — the curve leans toward it but
+ * never reaches it. Only the first and last points were genuinely on the
+ * line, so checkpoint dots drawn at the waypoints sat visibly off the
+ * curve. A Catmull-Rom spline interpolates its points, so a dot at any
+ * waypoint is exactly on the stroke.
+ */
+export function smoothPath(points: Point[], tension = 6) {
+  if (points.length < 2) return "";
+  if (points.length === 2) {
+    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
+  }
+
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? points[i + 1];
+
+    const c1 = {
+      x: r3(p1.x + (p2.x - p0.x) / tension),
+      y: r3(p1.y + (p2.y - p0.y) / tension),
+    };
+    const c2 = {
+      x: r3(p2.x - (p3.x - p1.x) / tension),
+      y: r3(p2.y - (p3.y - p1.y) / tension),
+    };
+    d += ` C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
 /** SVG path `d` for the arc itself — used as the track and the gradient band. */
 export function arcPath(opts: ArcOptions = {}) {
   const { cx, cy, radius, startDeg, endDeg } = { ...DEFAULTS, ...opts };

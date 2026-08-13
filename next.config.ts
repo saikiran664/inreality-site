@@ -2,12 +2,19 @@ import type { NextConfig } from "next";
 
 /**
  * `npm run export` sets STATIC_EXPORT=1 and emits a self-contained `out/`
- * folder that can be opened straight from the filesystem (file://) with no
- * server. `assetPrefix: "."` is what makes that work — without it Next emits
- * root-absolute `/_next/...` URLs, which resolve to the drive root and 404
- * when the page is opened as a file.
+ * folder, served by "Open Website.bat" over http://localhost.
  *
- * The flag is opt-in so `npm run dev` keeps its normal behaviour.
+ * Deliberately NO `assetPrefix`. A relative prefix (".") only ever works for
+ * pages at the root: on a nested route like /thank-you/ it resolves
+ * "./_next/..." against that directory, giving /thank-you/_next/... — a 404,
+ * and a page with no CSS or JS. Next takes one static prefix for every route,
+ * so no single relative value can be correct at more than one depth.
+ *
+ * Root-absolute "/_next/..." is correct everywhere the site is served over
+ * http, which covers both the local launcher and any real host. The only case
+ * it does not cover is opening out/index.html directly as a file:// document,
+ * which the launcher already avoids — Chrome gives file:// pages an opaque
+ * origin that blocks webfonts anyway.
  */
 const isStaticExport = process.env.STATIC_EXPORT === "1";
 
@@ -15,7 +22,6 @@ const nextConfig: NextConfig = {
   ...(isStaticExport
     ? {
         output: "export",
-        assetPrefix: ".",
         images: { unoptimized: true },
         trailingSlash: true,
       }

@@ -32,11 +32,11 @@ export function CTASection() {
           className="flex justify-center"
         >
           <div className="glass glass-sheen relative inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full py-2 pl-4 pr-5 sm:gap-3 sm:py-2.5 sm:pl-5 sm:pr-6">
-            <BrandMark height={14} className="sm:!text-[16px]" />
-            <GlassX size={20} slices={5} depth={1.5} className="shrink-0 sm:!h-6 sm:!w-6" />
             <span className="truncate font-body text-xs font-bold uppercase tracking-[0.2em] text-paper/80 sm:text-sm">
               Your story
             </span>
+            <GlassX size={20} slices={5} depth={1.5} className="shrink-0 sm:!h-6 sm:!w-6" />
+            <BrandMark height={14} className="sm:!text-[16px]" />
           </div>
         </motion.div>
 
@@ -45,7 +45,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.85, ease: EASE, delay: 0.1 }}
-          className="mt-7 font-display text-[11vw] leading-[0.88] tracking-tight sm:mt-9 sm:text-5xl md:text-6xl lg:text-8xl"
+          className="mt-7 font-display text-[11vw] leading-display tracking-tight sm:mt-9 sm:text-5xl md:text-6xl lg:text-8xl"
         >
           LET&rsquo;S BUILD SOMETHING{" "}
           <span className="gradient-text">WORTH REMEMBERING</span>

@@ -45,7 +45,7 @@ export function Hero() {
 
         <motion.h1
           variants={item}
-          className="mt-6 max-w-5xl font-display text-[13vw] leading-[0.86] tracking-tight text-paper sm:mt-9 sm:text-6xl md:text-7xl lg:text-[7.5rem]"
+          className="mt-6 max-w-5xl font-display text-[13vw] leading-display tracking-tight text-paper sm:mt-9 sm:text-6xl md:text-7xl lg:text-[7.5rem]"
         >
           WE TURN YOUR STORY INTO{" "}
           <span className="gradient-text">INFLUENCE</span>
@@ -55,7 +55,7 @@ export function Hero() {
           variants={item}
           className="mt-5 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:mt-9 sm:text-lg md:text-xl"
         >
-          {BRAND.tagline} In.Reality helps founders, executives, creators and
+          {BRAND.tagline} InReality helps founders, executives, creators and
           industry leaders build meaningful digital influence — turning content
           into credibility, and credibility into opportunity.
         </motion.p>

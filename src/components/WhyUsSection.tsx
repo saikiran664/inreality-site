@@ -32,7 +32,7 @@ export function WhyUsSection() {
               transition={{ duration: 0.7, ease: EASE }}
               className="font-body text-[10px] font-extrabold uppercase tracking-[0.25em] text-scarlet sm:text-xs sm:tracking-[0.3em]"
             >
-              Why In.Reality
+              Why InReality
             </motion.p>
 
             <motion.h2
@@ -40,7 +40,7 @@ export function WhyUsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.35 }}
               transition={{ duration: 0.85, ease: EASE, delay: 0.1 }}
-              className="mt-4 font-display text-[11vw] leading-[0.86] tracking-tight text-paper sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl"
+              className="mt-4 font-display text-[11vw] leading-display tracking-tight text-paper sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl"
             >
               WE ASK WHAT STORY THE WORLD SHOULD{" "}
               <span className="gradient-text">REMEMBER</span>

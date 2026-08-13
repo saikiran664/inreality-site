@@ -38,7 +38,7 @@ export function PhilosophySection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.85, ease: EASE, delay: 0.1 }}
-          className="mt-5 font-display text-[13vw] leading-[0.86] tracking-tight text-paper sm:mt-7 sm:text-6xl md:text-7xl lg:text-8xl"
+          className="mt-5 font-display text-[13vw] leading-display tracking-tight text-paper sm:mt-7 sm:text-6xl md:text-7xl lg:text-8xl"
         >
           STORY, <span className="gradient-text">THEN CONTENT</span>
         </motion.h2>

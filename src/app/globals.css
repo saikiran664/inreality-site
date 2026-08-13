@@ -51,6 +51,23 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  /* ── Display leading ──────────────────────────────────────
+     One value for every section headline. These had drifted to five
+     different arbitrary values (0.82 through 0.9) across eight headings,
+     which reads as carelessness at display size — and all of them were tight
+     enough that consecutive lines of Anton very nearly collided.
+
+     Anton is a tall-cap condensed face with almost no descender, so it takes
+     tighter leading than a text face would; 1.05 is where the lines separate
+     cleanly without the block falling apart.
+
+     Declared as a THEME token, not a plain @utility, and that distinction
+     matters: Tailwind's `text-*` utilities set a line-height of their own,
+     and a custom utility loses to them on sort order — the leading silently
+     stayed at 1. Going through the `--leading-*` namespace generates a real
+     `leading-display` utility, which sorts after `text-*` and wins. */
+  --leading-display: 1.05;
+
   --font-display: var(--font-anton);
   --font-body: var(--font-jakarta);
   /* Oilvare Base — the logotype. Bundled via next/font (see layout.tsx),

@@ -84,9 +84,24 @@ export function GlassX({
         <motion.div
           className="preserve-3d absolute inset-0"
           style={{ willChange: "transform" }}
-          animate={{ rotateY: [0, 360], rotateX: [8, -8, 8] }}
+          /**
+           * Every slice sets `backfaceVisibility: hidden`, so the mark is
+           * invisible for the whole half-turn between 90° and 270°. At a
+           * constant 16s revolution that was 8 seconds of empty space.
+           *
+           * The revolution still takes 16s — it just no longer spends it
+           * evenly. The face is held either side of front-on and the back
+           * half is crossed quickly, cutting the invisible window to exactly
+           * 2s (0.125 × 16) while keeping the slow, weighty spin.
+           */
+          animate={{ rotateY: [0, 90, 270, 360], rotateX: [8, -8, 8] }}
           transition={{
-            rotateY: { duration: 16, repeat: Infinity, ease: "linear" },
+            rotateY: {
+              duration: 16,
+              repeat: Infinity,
+              ease: "linear",
+              times: [0, 0.4375, 0.5625, 1],
+            },
             rotateX: { duration: 9, repeat: Infinity, ease: "easeInOut" },
           }}
         >
