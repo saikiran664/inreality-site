@@ -82,7 +82,10 @@ export function CurveSection({
             )}
           </div>
 
-          <div className="relative min-h-0 w-full max-w-6xl shrink">
+          {/* Negative margins cancel the section's own padding so the curve
+              runs edge to edge. The pinned box is overflow-hidden, so this
+              can't leak horizontal scroll onto the page. */}
+          <div className="relative -mx-5 min-h-0 shrink self-stretch sm:-mx-6 md:-mx-12 lg:-mx-16">
             <GrowingCurve
               items={items}
               activeIndex={activeIndex}

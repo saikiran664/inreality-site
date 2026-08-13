@@ -11,7 +11,7 @@ export function FloatingGlass() {
         className="loop-pulse absolute inset-8 rounded-full blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(255,64,0,0.45), rgba(75,31,232,0.4) 55%, transparent 78%)",
+            "radial-gradient(closest-side, rgba(255,122,61,0.5), rgba(255,64,0,0.34) 55%, transparent 78%)",
         }}
       />
 

@@ -1,20 +1,9 @@
 "use client";
 
-import { CurveSection } from "@/components/CurveSection";
-import { SERVICES } from "@/lib/data";
+import { ServicesSpine } from "@/components/ServicesSpine";
 
+/** Kept as the named export the home page imports; the services section is a
+ *  vertical spine now rather than an arc. */
 export function ServicesRibbon() {
-  return (
-    <CurveSection
-      id="services"
-      eyebrow="Our services"
-      headingLead="WE BUILD"
-      headingAccent="INFLUENCE"
-      intro="Eleven disciplines, one dedicated team — everything needed to build a personal brand that compounds."
-      items={SERVICES}
-      ground="bg-void"
-      viewAllHref="/services"
-      viewAllLabel="See all eleven services"
-    />
-  );
+  return <ServicesSpine />;
 }
