@@ -70,9 +70,9 @@
 
   --font-display: var(--font-anton);
   --font-body: var(--font-jakarta);
-  /* Oilvare Base — the logotype. Bundled via next/font (see layout.tsx),
-     falls through to Anton if the font file is ever removed. */
-  --font-logo: var(--font-oilvare), var(--font-anton), sans-serif;
+  /* Text fallback for the wordmark. The logotype itself is artwork at
+     public/logo.png; this only renders if that image fails to load. */
+  --font-logo: var(--font-anton), sans-serif;
 }
 
 * {

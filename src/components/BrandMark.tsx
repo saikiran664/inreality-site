@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 /**
  * The InReality wordmark.
  *
- * Prefers the real artwork at `public/logo.png`. Falls back to the Oilvare
- * logotype (bundled via next/font in layout.tsx) and finally to Anton.
+ * Renders the artwork at `public/logo.png`, falling back to Anton-set text if
+ * the image fails to load.
  */
 export function BrandMark({
   className = "",

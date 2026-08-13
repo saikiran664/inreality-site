@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Anton, Plus_Jakarta_Sans } from "next/font/google";
-import localFont from "next/font/local";
 import { BRAND } from "@/lib/data";
 import "./globals.css";
 
@@ -20,15 +19,17 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 /**
- * Oilvare Base — the InReality logotype. Loaded through next/font so the
- * asset URL is bundled and stays correct in a static export.
- * NOTE: licensing unresolved — see README-FONTS.md.
+ * The Oilvare logotype used to be bundled here via next/font.
+ *
+ * It was removed rather than licensed. Its own metadata read "© 2016 Adam
+ * Ladd, All rights reserved" with fsType 4 (Preview & Print only), which
+ * contradicted the CC-BY claim on the site it was downloaded from — and
+ * self-hosting a webfont redistributes the font file itself to every visitor.
+ *
+ * The wordmark is now artwork at public/logo.png, exported from Canva. That
+ * ships pixels rather than the font program, so the licence question does not
+ * arise. Anton carries the text fallback if the image ever fails to load.
  */
-const oilvare = localFont({
-  src: "../fonts/OilvareBase.ttf",
-  variable: "--font-oilvare",
-  display: "swap",
-});
 
 const DESCRIPTION =
   "InReality builds personal brands through strategic storytelling, helping founders, executives, creators and industry leaders turn content into credibility and influence into opportunity.";
@@ -93,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${anton.variable} ${jakarta.variable} ${oilvare.variable} h-full antialiased`}
+      className={`${anton.variable} ${jakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-void text-paper font-body">
         <script
