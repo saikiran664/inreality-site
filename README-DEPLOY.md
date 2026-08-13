@@ -77,24 +77,23 @@ production canonicals to search engines and split the site's indexing.
 
 ---
 
-## Known issue: the logo font
+## The wordmark
 
-`public/logo.png` does not exist, so `BrandMark` falls back to the Oilvare
-logotype for the wordmark. Two consequences:
+`public/logo.png` is the wordmark — artwork exported from Canva, not a font.
+The Oilvare webfont it replaced has been deleted from the repo; see the note
+at the top of `layout.tsx` for why. Anton carries the text fallback if the
+image ever fails to load.
 
-1. Every page load makes a failing request for `/logo.png` — harmless, but it
-   surfaces as a console error in production.
-2. **Oilvare's licence is unresolved.** The file's own metadata says
-   "© 2016 Adam Ladd, All rights reserved" with `fsType: 4` (Preview & Print
-   only), which contradicts the CC-BY claim on the site it came from. Hosting
-   it as a webfont publicly distributes the file.
+**If you re-export it from Canva, trim it first.** Canva exports the entire
+page, not the artwork. The original was 3375×4219 with the wordmark sitting in
+a 2512×294 strip in the middle — the rest transparent padding. `BrandMark`
+sizes the mark by height, so an untrimmed export renders the lettering at a
+fraction of its intended size while the empty space consumes the layout. Crop
+to the content bounds before committing.
 
-Any one of these closes it:
+Export settings: **PNG, transparent background, at least 300px tall** after
+trimming (the intro splash renders it at 72px, which needs 3× for retina).
+Light artwork — the site background is near-black.
 
-- Drop real artwork at `public/logo.png` — the component prefers it, the font
-  stops being used, and the 404 disappears.
-- Buy a licence from Adam Ladd.
-- Point `--font-logo` at Anton in `layout.tsx`. Anton is already loaded and is
-  SIL Open Font Licensed, so it is safe commercially.
-
-See also `README-FONTS.md`.
+Avoid SVG unless text is converted to outlines, or the font data can travel
+inside the file and reintroduce the problem the PNG solves.
