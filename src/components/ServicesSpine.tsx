@@ -32,7 +32,6 @@ export function ServicesSpine() {
   const hostRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [shift, setShift] = useState(0);
-  const [railFill, setRailFill] = useState(0);
 
   /**
    * Measured rather than computed from a fixed row height: the active row
@@ -53,7 +52,6 @@ export function ServicesSpine() {
       ? row.offsetTop + node.offsetTop + node.offsetHeight / 2
       : row.offsetTop;
     setShift(host.clientHeight * ANCHOR - nodeCentre);
-    setRailFill(nodeCentre);
   }, [activeIndex]);
 
   // Layout effect so the shift is applied in the same frame the expanded row
@@ -159,25 +157,6 @@ export function ServicesSpine() {
                 transition: "transform 0.55s cubic-bezier(.16,1,.3,1)",
               }}
             >
-              {/* Rail sits inside the travelling container so the nodes never
-                  drift away from it. */}
-              <div
-                className="absolute left-[11px] top-0 w-px bg-paper/15 sm:left-[15px]"
-                style={{ height: "100%" }}
-                aria-hidden="true"
-              />
-              <div
-                className="absolute left-[11px] top-0 w-[3px] rounded-full sm:left-[14px]"
-                style={{
-                  height: railFill,
-                  background:
-                    "linear-gradient(to bottom, #7c2408 0%, #e63600 40%, #ff4000 75%, #ff7a3d 100%)",
-                  boxShadow: "0 0 18px rgba(255,64,0,0.45)",
-                  transition: "height 0.55s cubic-bezier(.16,1,.3,1)",
-                }}
-                aria-hidden="true"
-              />
-
               <ol className="relative">
                 {items.map((item, i) => {
                   const isActive = i === activeIndex;
@@ -191,6 +170,38 @@ export function ServicesSpine() {
                       }}
                       className="relative py-2 pl-10 sm:py-2.5 sm:pl-14"
                     >
+                      {/* Each row draws its own slice of the rail.
+                          The rail used to be one absolutely-positioned bar
+                          whose height was measured in pixels. That height was
+                          read while the row being left was still collapsing,
+                          so it briefly computed too long — the line shot past
+                          the active node and snapped back once the transition
+                          finished. Nothing is measured now: a row's slice is
+                          exactly as tall as the row, so it tracks layout
+                          automatically and cannot overshoot.
+
+                          The active row is the one place the rail stops
+                          mid-row, at the node. That offset is a constant, not
+                          a measurement — the node is positioned at a fixed
+                          top within the row, so its centre is 25px down (31px
+                          from the sm breakpoint). */}
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-paper/15 sm:left-[15px]"
+                      />
+                      {isDone && (
+                        <span
+                          aria-hidden="true"
+                          className={`absolute left-[11px] top-0 w-0.5 sm:left-[15px] ${
+                            isActive ? "h-[25px] sm:h-[31px]" : "bottom-0"
+                          }`}
+                          style={{
+                            background:
+                              "linear-gradient(to bottom, #e63600, #ff4000 70%, #ff7a3d)",
+                            boxShadow: "0 0 14px rgba(255,64,0,0.5)",
+                          }}
+                        />
+                      )}
                       <button
                         type="button"
                         onClick={() => jumpTo(i)}
