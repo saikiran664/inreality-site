@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CurveListPage } from "@/components/CurveListPage";
 import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SERVICES } from "@/lib/data";
 
 const DESCRIPTION =
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
+      <SiteHeader />
       <CurveListPage
         eyebrow="Our services"
         headingLead="WE BUILD"

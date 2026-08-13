@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { BrandMark } from "@/components/BrandMark";
 import { Grain } from "@/components/Grain";
 import { BRAND, type CurveItem } from "@/lib/data";
 
@@ -40,12 +39,11 @@ export function CurveListPage({
       <div className="gradient-field" />
       <Grain />
 
-      <div className="relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-20 md:px-12 md:py-24">
-        <Link href="/" className="inline-block" aria-label={`${BRAND.agencyName} home`}>
-          <BrandMark height={18} className="sm:!text-[22px]" />
-        </Link>
-
-        <header className="mt-12 sm:mt-16">
+      {/* Top padding clears the fixed header rather than sitting under it.
+          The wordmark that used to sit here is gone — the header carries it
+          now, and two of them stacked read as a mistake. */}
+      <div className="relative mx-auto w-full max-w-6xl px-5 pt-28 pb-16 sm:px-6 sm:pt-32 sm:pb-20 md:px-12 md:pt-36 md:pb-24">
+        <header>
           <p className="font-body text-[10px] font-extrabold uppercase tracking-[0.25em] text-scarlet sm:text-xs sm:tracking-[0.3em]">
             {eyebrow}
           </p>

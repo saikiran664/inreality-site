@@ -127,9 +127,23 @@ export function ServicesSpine() {
           </div>
 
           {/* Spine */}
+          {/*
+            `self-stretch` is load-bearing, not cosmetic.
+
+            Every child of this box is absolutely positioned, so the box has no
+            intrinsic height of its own. In the mobile column layout that was
+            fine — `flex-1` handed it the leftover height. But the large-screen
+            row sets `items-center`, which sizes each item to its own content:
+            zero. The spine was rendering, with a height of 0, clipped away by
+            its own `overflow-hidden`. `self-stretch` opts this one item out of
+            that centring so it fills the row instead.
+
+            The min-heights are a floor for the case where the row itself is
+            shorter than expected.
+          */}
           <div
             ref={hostRef}
-            className="relative min-h-0 w-full flex-1 overflow-hidden"
+            className="relative min-h-[46vh] w-full flex-1 self-stretch overflow-hidden lg:min-h-[58vh]"
             style={{
               // Rows fade out at both ends instead of being cut off square.
               maskImage:

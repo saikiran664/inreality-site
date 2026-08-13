@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { serpentinePoints, smoothPath } from "@/lib/curve";
 import type { CurveItem } from "@/lib/data";
 
@@ -103,38 +103,94 @@ export function GrowingCurve({
 
   const path = useMemo(() => smoothPath(drawnPoints), [drawnPoints]);
 
-  /**
-   * Where the checkpoint span sits along the extended path, as a 0–1
-   * fraction, so scroll progress can be mapped onto it.
-   *
-   * Approximated from segment count rather than measured arc length: the
-   * waypoints are evenly spaced in x and the wave is shallow, so segments are
-   * near enough equal length that measuring would move the tip by less than a
-   * pixel.
-   */
-  const segments = drawnPoints.length - 1;
-  const startFrac = segments > 0 ? 1 / segments : 0;
-  const endFrac = segments > 0 ? (segments - 1) / segments : 1;
-
   const clamped = Math.max(0, Math.min(1, progress));
-  const drawnFrac = startFrac + clamped * (endFrac - startFrac);
 
-  /** The travelling tip, interpolated from continuous progress so the pan
-   *  glides rather than lurching between checkpoints. */
-  const tip = useMemo(() => {
+  /**
+   * The path measured for real, rather than assumed.
+   *
+   * Where each checkpoint falls along the path was previously derived from
+   * segment COUNT, on the assumption that segments are roughly equal length.
+   * Adding the lead-in and lead-out waypoints broke that assumption without
+   * breaking the code: those two run a full viewBox width each, against ~200
+   * units between checkpoints, so they are an order of magnitude longer. The
+   * first checkpoint sat at a true 0.374 of the path while the arithmetic put
+   * it at 0.100 — and since the arrowhead was positioned by a different
+   * method (linear interpolation between waypoints), the stroke and the
+   * arrowhead disagreed by a visible margin.
+   *
+   * Sampling the rendered path gives one source of truth that the drawn
+   * length, the arrowhead and the pan all read from, so they cannot drift
+   * apart again.
+   */
+  const trackRef = useRef<SVGPathElement>(null);
+  const samplesRef = useRef<{ xs: Float64Array; ys: Float64Array; total: number } | null>(null);
+  const [checkpointFracs, setCheckpointFracs] = useState<number[]>([]);
+
+  useLayoutEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let total = 0;
+    try {
+      total = el.getTotalLength();
+    } catch {
+      return;
+    }
+    if (!total || !Number.isFinite(total)) return;
+
+    const N = 720;
+    const xs = new Float64Array(N + 1);
+    const ys = new Float64Array(N + 1);
+    for (let i = 0; i <= N; i++) {
+      const pt = el.getPointAtLength((i / N) * total);
+      xs[i] = pt.x;
+      ys[i] = pt.y;
+    }
+    samplesRef.current = { xs, ys, total };
+
+    // Each checkpoint's position along the path, found by nearest sample.
+    const fracs = points.map((p) => {
+      let best = 0;
+      let bestD = Infinity;
+      for (let i = 0; i <= N; i++) {
+        const dx = xs[i] - p.x;
+        const dy = ys[i] - p.y;
+        const d = dx * dx + dy * dy;
+        if (d < bestD) {
+          bestD = d;
+          best = i;
+        }
+      }
+      return best / N;
+    });
+    setCheckpointFracs(fracs);
+  }, [path, points]);
+
+  const measured = checkpointFracs.length === points.length && points.length > 1;
+
+  /** Scroll progress mapped onto the measured checkpoint positions. */
+  const drawnFrac = useMemo(() => {
+    if (!measured) return 0;
     const steps = points.length - 1;
-    if (steps <= 0) return { x: points[0]?.x ?? 0, y: points[0]?.y ?? 0, angle: 0 };
     const scaled = clamped * steps;
     const i = Math.min(steps - 1, Math.max(0, Math.floor(scaled)));
-    const t = scaled - i;
-    const a = points[i];
-    const b = points[i + 1];
+    return lerp(checkpointFracs[i], checkpointFracs[i + 1], scaled - i);
+  }, [clamped, checkpointFracs, measured, points.length]);
+
+  /** The tip, read off the same samples the stroke length comes from. */
+  const tip = useMemo(() => {
+    const s = samplesRef.current;
+    const fallback = { x: points[0]?.x ?? 0, y: points[0]?.y ?? 0, angle: 0 };
+    if (!s || !measured) return fallback;
+    const N = s.xs.length - 1;
+    const at = Math.max(0, Math.min(N, Math.round(drawnFrac * N)));
+    const a = Math.max(0, at - 3);
+    const b = Math.min(N, at + 3);
     return {
-      x: lerp(a.x, b.x, t),
-      y: lerp(a.y, b.y, t),
-      angle: (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI,
+      x: s.xs[at],
+      y: s.ys[at],
+      angle: (Math.atan2(s.ys[b] - s.ys[a], s.xs[b] - s.xs[a]) * 180) / Math.PI,
     };
-  }, [clamped, points]);
+  }, [drawnFrac, measured, points]);
 
   const shift = vbWidth * ANCHOR - tip.x;
 
@@ -166,8 +222,10 @@ export function GrowingCurve({
             its target asymptotically, every tick restarted the transition and
             the pan never caught up. The anchor visibly drifted as a result. */}
         <g style={{ transform: `translateX(${shift}px)` }}>
-          {/* The road ahead — runs off both edges */}
+          {/* The road ahead — runs off both edges, and doubles as the element
+              the geometry above is measured from. */}
           <path
+            ref={trackRef}
             d={path}
             stroke="#ffffff"
             strokeOpacity={0.15}
