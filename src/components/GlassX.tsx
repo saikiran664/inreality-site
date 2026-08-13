@@ -42,15 +42,15 @@ export function GlassX({
             transform: `translate(-50%, -50%) rotate(${rotate}deg) translateZ(${offset}px)`,
             backfaceVisibility: "hidden",
             background: isFace
-              ? "linear-gradient(135deg, rgba(255,255,255,0.58) 0%, rgba(255,122,61,0.3) 42%, rgba(255,64,0,0.34) 100%)"
-              : "linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,64,0,0.16))",
+              ? "linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(147,133,255,0.35) 40%, rgba(75,31,232,0.4) 100%)"
+              : "linear-gradient(135deg, rgba(147,133,255,0.22), rgba(75,31,232,0.18))",
             border: isFace
               ? `${Math.max(1, native / 96)}px solid rgba(255,255,255,0.75)`
               : `${Math.max(1, native / 190)}px solid rgba(255,255,255,0.14)`,
             backdropFilter: isFace ? "blur(10px) saturate(180%)" : undefined,
             WebkitBackdropFilter: isFace ? "blur(10px) saturate(180%)" : undefined,
             boxShadow: isFace
-              ? "0 12px 40px -8px rgba(255,64,0,0.6), inset 0 1px 0 rgba(255,255,255,0.9)"
+              ? "0 12px 40px -8px rgba(75,31,232,0.7), inset 0 1px 0 rgba(255,255,255,0.9)"
               : undefined,
           }}
         />
@@ -78,7 +78,7 @@ export function GlassX({
           className="loop-pulse absolute inset-0 rounded-full blur-2xl"
           style={{
             background:
-              "radial-gradient(closest-side, rgba(255,255,255,0.5), rgba(255,64,0,0.42) 60%, transparent 78%)",
+              "radial-gradient(closest-side, rgba(147,133,255,0.75), rgba(75,31,232,0.4) 60%, transparent 78%)",
           }}
         />
         <motion.div

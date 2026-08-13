@@ -7,11 +7,18 @@ export function FloatingGlass() {
       aria-hidden="true"
       className="perspective-dramatic pointer-events-none absolute -right-10 top-8 hidden h-[460px] w-[460px] md:block lg:-right-4 lg:top-0 lg:h-[560px] lg:w-[560px]"
     >
+      {/* Indigo only — no scarlet stop.
+          This glow sits directly behind the glass shards, and the shards
+          apply saturate(160%) to whatever shows through them. A scarlet→
+          indigo radial blends through MAGENTA at the crossover, and the
+          saturation boost then pushed those squares to a lavender-pink that
+          belongs to neither brand colour. The two hues stay unmixed; scarlet
+          still leads the lower field, just not underneath the glass. */}
       <div
         className="loop-pulse absolute inset-8 rounded-full blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(255,122,61,0.5), rgba(255,64,0,0.34) 55%, transparent 78%)",
+            "radial-gradient(closest-side, rgba(75,31,232,0.52), rgba(42,10,148,0.44) 58%, transparent 78%)",
         }}
       />
 

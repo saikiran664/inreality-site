@@ -2,27 +2,26 @@
 
 :root {
   /* ── Core palette ───────────────────────────────────────────
-     Three colours only: black, white, scarlet.
+     Strictly three hues: vivid indigo, white, black. No warm accent —
+     an indigo/orange pair reads as the Meta gradient. Depth comes from
+     the indigo ramp (deep → vivid → light → pale) instead.
+     NOTE: --brand-primary is too dark for text on black (2.6:1). Use
+     --brand-accent or --brand-accent-pale for any coloured type.      */
+  --brand-paper: #f4f2f9;        /* cool off-white */
+  --brand-void: #07050f;         /* near-black, indigo-tinted */
+  --brand-midnight: #0a0618;     /* lifted black for section variation */
+  --brand-primary: #4b1fe8;      /* vivid indigo — fills, CTAs, bands */
+  --brand-primary-deep: #2a0a94; /* deep indigo — gradient anchor */
+  --brand-accent: #9385ff;       /* light indigo — glows, secondary type */
+  --brand-accent-pale: #c7c0ff;  /* pale indigo — highlights, gradient tip */
 
-     The indigo ramp that used to live here is gone. It was the deck's
-     original hue, but once scarlet became the accent the two fought:
-     stacked at high alpha in the ambient field, and amplified again by
-     the glass surfaces' saturate(160%), the indigo read as a lavender
-     wash over the whole page rather than as depth.
-
-     Depth now comes from VALUE — how light or dark — not from a second
-     hue. The neutrals carry a trace of warmth so they sit with scarlet
-     instead of going cold against it.                                 */
-  --brand-paper: #f5f3f0;    /* faintly warm off-white */
-  --brand-void: #090807;     /* near-black, a hair warm */
-  --brand-midnight: #100e0d; /* lifted black for section variation */
-
-  /* The accent: scarlet #ff4000. Bright enough (5.8:1 on the void) to
+  /* Third colour: scarlet #ff4000. Bright enough (5.8:1 on the void) to
      work as type directly — no separate light tint needed, unlike the
      burgundy/crimson ramps.
      The ramp is kept intentionally bright at both ends so BLACK type
      clears 4.5:1 on every stop; white would only manage 3.5:1 here.
-     Scarlet only ever gradients into itself or into white.            */
+     Still kept OUT of the indigo gradients — an indigo→warm blend is
+     the Meta gradient. Scarlet only ever gradients into itself.       */
   --brand-scarlet-deep: #e63600;   /* darkest stop — still 4.9:1 vs black type */
   --brand-scarlet: #ff4000;        /* core scarlet — type, markers, fills */
   --brand-scarlet-bright: #ff7a3d; /* bright tip of the ramp */
@@ -41,6 +40,10 @@
   --color-paper: var(--brand-paper);
   --color-void: var(--brand-void);
   --color-midnight: var(--brand-midnight);
+  --color-primary: var(--brand-primary);
+  --color-primary-deep: var(--brand-primary-deep);
+  --color-accent: var(--brand-accent);
+  --color-accent-pale: var(--brand-accent-pale);
   --color-scarlet: var(--brand-scarlet);
   --color-scarlet-deep: var(--brand-scarlet-deep);
   --color-scarlet-bright: var(--brand-scarlet-bright);
@@ -176,14 +179,15 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  /* Scarlet and white only. A neutral white lift does the work the pale
-     indigo used to do — it separates the upper field from the ground
-     without introducing a hue that competes with the accent. */
   background:
-    radial-gradient(44% 48% at 18% 26%, rgba(255, 64, 0, 0.2) 0%, transparent 70%),
-    radial-gradient(38% 42% at 82% 22%, rgba(255, 255, 255, 0.05) 0%, transparent 70%),
-    radial-gradient(48% 52% at 70% 84%, rgba(255, 64, 0, 0.14) 0%, transparent 72%),
-    radial-gradient(42% 46% at 24% 88%, rgba(230, 54, 0, 0.11) 0%, transparent 70%);
+    radial-gradient(42% 46% at 18% 28%, rgba(75, 31, 232, 0.5) 0%, transparent 70%),
+    /* Vivid indigo here rather than the pale tint. This radial sits behind
+       the hero's glass shards, and #9385ff is already most of the way to
+       lavender before the glass multiplies it by saturate(160%). The vivid
+       stop keeps the same lift without the wash. */
+    radial-gradient(38% 42% at 82% 24%, rgba(75, 31, 232, 0.3) 0%, transparent 70%),
+    radial-gradient(46% 50% at 68% 82%, rgba(255, 64, 0, 0.18) 0%, transparent 72%),
+    radial-gradient(40% 44% at 26% 88%, rgba(42, 10, 148, 0.45) 0%, transparent 70%);
   background-size: 200% 200%;
   animation: drift-field 26s ease-in-out infinite;
   filter: blur(12px);
