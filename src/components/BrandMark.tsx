@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * The InReality wordmark.
+ * The Inreality wordmark.
  *
  * Renders the artwork at `public/logo.png`, falling back to Anton-set text if
  * the image fails to load.
@@ -59,7 +59,7 @@ export function BrandMark({
     <img
       ref={imgRef}
       src="/logo.png"
-      alt="InReality"
+      alt="Inreality"
       style={{ fontSize: height }}
       onError={() => setFailed(true)}
       className={`h-[1em] w-auto select-none ${forceWhite ? "brightness-0 invert" : ""} ${className}`}

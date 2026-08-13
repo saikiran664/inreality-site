@@ -6,11 +6,18 @@ import { BrandMark } from "@/components/BrandMark";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/**
+ * Root-relative, not bare fragments. Services and the journey are real pages
+ * now, and a bare "#why" resolves against whatever page you are currently on
+ * — so from /services it would look for an anchor that isn't there and do
+ * nothing. Leading with "/" always returns to the home page first.
+ */
 const LINKS = [
-  { href: "#philosophy", label: "Philosophy" },
-  { href: "#services", label: "Services" },
-  { href: "#why", label: "Why us" },
-  { href: "#contact", label: "Contact" },
+  { href: "/services", label: "Services" },
+  { href: "/journey", label: "Journey" },
+  { href: "/#philosophy", label: "Philosophy" },
+  { href: "/#why", label: "Why us" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function SiteHeader() {
@@ -36,7 +43,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-4 sm:px-6 sm:py-5 md:px-12 lg:px-16">
         <a
-          href="#top"
+          href="/"
           onClick={() => window.dispatchEvent(new Event("inreality:replay-intro"))}
           title="Replay intro"
           className="shrink-0 transition-opacity duration-300 hover:opacity-70"
@@ -46,7 +53,7 @@ export function SiteHeader() {
 
         {/* Full nav from md up; below that the section links move into a
             compact scrollable row so they stay reachable on phones. */}
-        <nav className="hidden items-center gap-9 md:flex">
+        <nav className="hidden items-center gap-7 md:flex lg:gap-9">
           {LINKS.map((link) => (
             <a
               key={link.href}
@@ -71,7 +78,7 @@ export function SiteHeader() {
         </nav>
 
         <a
-          href="#contact"
+          href="/#contact"
           className="btn-scarlet shrink-0 rounded-full px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wider transition-transform duration-300 hover:scale-[1.05] sm:px-6 sm:py-2.5 sm:text-sm"
         >
           Work With Us

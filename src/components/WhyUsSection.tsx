@@ -32,7 +32,7 @@ export function WhyUsSection() {
               transition={{ duration: 0.7, ease: EASE }}
               className="font-body text-[10px] font-extrabold uppercase tracking-[0.25em] text-scarlet sm:text-xs sm:tracking-[0.3em]"
             >
-              Why InReality
+              Why Inreality
             </motion.p>
 
             <motion.h2

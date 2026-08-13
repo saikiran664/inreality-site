@@ -27,7 +27,7 @@ export default function NotFound() {
         <Grain />
 
         <div className="relative mx-auto w-full max-w-2xl">
-          <Link href="/" className="inline-block" aria-label="InReality home">
+          <Link href="/" className="inline-block" aria-label="Inreality home">
             <BrandMark height={20} className="sm:!text-[24px]" />
           </Link>
 

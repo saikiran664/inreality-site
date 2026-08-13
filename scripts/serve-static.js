@@ -78,7 +78,7 @@ function listen(port, attemptsLeft) {
   });
   server.listen(port, () => {
     const url = `http://localhost:${port}`;
-    console.log("\n  In.Reality - brand site");
+    console.log("\n  Inreality - brand site");
     console.log("  Running at " + url);
     console.log("\n  Leave this window open while you view the site.");
     console.log("  Close it (or press Ctrl+C) when you are done.\n");

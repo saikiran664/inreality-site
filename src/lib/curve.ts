@@ -65,6 +65,36 @@ export function hWavePoints(count: number, opts: HWaveOptions = {}): Point[] {
   });
 }
 
+export type SerpentineOptions = {
+  spacing?: number;
+  amplitude?: number;
+  midY?: number;
+  leftPad?: number;
+};
+
+/**
+ * An open, left-to-right flowing curve — one waypoint per item, running off
+ * past the edge of any viewport rather than being folded to fit inside one.
+ *
+ * This replaced a fixed arc that had to hold every checkpoint inside a single
+ * screen. That constraint is what pushed markers off-screen: the more items,
+ * the wider the arc had to spread, and past a certain viewport ratio the ends
+ * simply left the frame. Here the path is allowed to be longer than the
+ * screen and the view travels along it instead, so item count and viewport
+ * size stop fighting each other.
+ *
+ * The vertical offset sums two sine waves whose periods don't divide evenly
+ * into each other, so the curve reads as organic rather than as a repeating
+ * mechanical ripple.
+ */
+export function serpentinePoints(count: number, opts: SerpentineOptions = {}): Point[] {
+  const { spacing = 200, amplitude = 92, midY = 175, leftPad = 90 } = opts;
+  return Array.from({ length: count }, (_, i) => ({
+    x: r3(leftPad + i * spacing),
+    y: r3(midY - (Math.sin(i * 0.72) * 0.76 + Math.sin(i * 1.31) * 0.24) * amplitude),
+  }));
+}
+
 /**
  * Smooth path that passes exactly THROUGH every point (Catmull-Rom spline
  * expressed as cubic beziers).

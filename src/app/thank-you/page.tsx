@@ -8,7 +8,7 @@ import { BRAND } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Thank you",
   description:
-    "Your enquiry has reached InReality. We'll be in touch shortly to talk through your goals, your audience and what your personal brand could look like.",
+    "Your enquiry has reached Inreality. We'll be in touch shortly to talk through your goals, your audience and what your personal brand could look like.",
   // A confirmation page has no business in search results: anyone arriving
   // from Google would see a thank-you for something they never submitted.
   robots: { index: false, follow: true },
@@ -22,7 +22,7 @@ export default function ThankYou() {
         <Grain />
 
         <div className="relative mx-auto w-full max-w-2xl">
-          <Link href="/" className="inline-block" aria-label="InReality home">
+          <Link href="/" className="inline-block" aria-label="Inreality home">
             <BrandMark height={20} className="sm:!text-[24px]" />
           </Link>
 
@@ -35,7 +35,7 @@ export default function ThankYou() {
           </h1>
 
           {/* TODO: state the real response-time promise here, e.g. "within one
-              working day". Left deliberately vague until InReality decides
+              working day". Left deliberately vague until Inreality decides
               what it can actually commit to — a number here is a promise. */}
           <p className="mx-auto mt-7 max-w-lg font-body text-base font-medium leading-relaxed text-paper/70 sm:text-lg">
             Your message has reached us and someone will read it personally.

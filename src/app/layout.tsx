@@ -32,7 +32,7 @@ const jakarta = Plus_Jakarta_Sans({
  */
 
 const DESCRIPTION =
-  "InReality builds personal brands through strategic storytelling, helping founders, executives, creators and industry leaders turn content into credibility and influence into opportunity.";
+  "Inreality builds personal brands through strategic storytelling, helping founders, creators, industry leaders and public figures turn content into credibility and influence into opportunity.";
 
 export const metadata: Metadata = {
   // Resolves the relative URLs below (canonical, OG image) against the real
@@ -40,29 +40,29 @@ export const metadata: Metadata = {
   // scrapers refuse to follow.
   metadataBase: new URL(BRAND.siteUrl),
   title: {
-    default: "InReality — Personal Branding & Strategic Storytelling",
+    default: "Inreality — Personal Branding & Strategic Storytelling",
     // Child pages set only their own name; the brand is appended here so no
     // page can ship an untitled or duplicate <title>.
-    template: "%s — InReality",
+    template: "%s — Inreality",
   },
   description: DESCRIPTION,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: BRAND.agencyName,
-    title: "InReality — Personal Branding & Strategic Storytelling",
+    title: "Inreality — Personal Branding & Strategic Storytelling",
     description: DESCRIPTION,
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "InReality — Personal Branding & Strategic Storytelling",
+    title: "Inreality — Personal Branding & Strategic Storytelling",
     description: DESCRIPTION,
   },
 };
 
 /**
- * ProfessionalService, not LocalBusiness: InReality is remote-first, and
+ * ProfessionalService, not LocalBusiness: Inreality is remote-first, and
  * LocalBusiness commits to a physical address and opening hours that don't
  * exist. Structured data asserting a location you don't have is worse than
  * none — it's a claim search engines can check.

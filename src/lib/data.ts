@@ -29,7 +29,7 @@ export type CurveItem = {
 };
 
 /**
- * The 11 services from the InReality deck ("What we actually do?").
+ * The 11 services from the Inreality deck ("What we actually do?").
  * Written for any prospective client — no single client is named here.
  */
 export const SERVICES: CurveItem[] = [
@@ -162,7 +162,7 @@ export const JOURNEY: CurveItem[] = [
   },
 ];
 
-/** "Our creative edge" — the four pillars, used in the Why InReality section. */
+/** "Our creative edge" — the four pillars, used in the Why Inreality section. */
 export const EDGE = [
   {
     title: "Strategic Thinking",
@@ -187,7 +187,7 @@ export const EDGE = [
 ];
 
 export const BRAND = {
-  agencyName: "InReality",
+  agencyName: "Inreality",
   tagline: "We believe true storytelling is valuable.",
   gist: "Building personal brands through strategic storytelling.",
   deckDate: "July 2026",
@@ -208,20 +208,20 @@ export type FAQ = { question: string; answer: string };
  * asserts a fact the site doesn't already make.
  *
  * The two questions people actually ask most, PRICE and TIMELINE, are
- * deliberately absent: both are commitments only InReality can make, and a
+ * deliberately absent: both are commitments only Inreality can make, and a
  * guessed number in an FAQ is one a client will hold you to. Add them here
  * once you've decided what they are.
  */
 export const FAQS: FAQ[] = [
   {
-    question: "What does InReality actually do?",
+    question: "What does Inreality actually do?",
     answer:
       "We build personal brands through strategic storytelling. That spans positioning and story development, content planning and ghostwriting, and cinematic production — podcasts, studio and on-location shoots — with monthly roadmaps and reporting so progress stays visible.",
   },
   {
     question: "Who do you work with?",
     answer:
-      "Founders, executives, creators and industry leaders — people whose personal credibility is already tied to their business, and who want that connection built deliberately rather than left to chance.",
+      "Founders, creators, industry leaders and public figures — people whose personal credibility is already tied to their business, and who want that connection built deliberately rather than left to chance.",
   },
   {
     question: "Will the content still sound like me?",

@@ -18,7 +18,7 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
 };
 
-const AUDIENCE = ["Founders", "Executives", "Creators", "Industry leaders"];
+const AUDIENCE = ["Founders", "Creators", "Industry leaders", "Public figures"];
 
 export function Hero() {
   return (
@@ -55,9 +55,9 @@ export function Hero() {
           variants={item}
           className="mt-5 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:mt-9 sm:text-lg md:text-xl"
         >
-          {BRAND.tagline} InReality helps founders, executives, creators and
-          industry leaders build meaningful digital influence — turning content
-          into credibility, and credibility into opportunity.
+          {BRAND.tagline} Inreality helps founders, creators, industry leaders
+          and public figures build meaningful digital influence — turning
+          content into credibility, and credibility into opportunity.
         </motion.p>
 
         <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-2 sm:gap-3">
