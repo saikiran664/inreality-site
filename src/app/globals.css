@@ -221,6 +221,32 @@ body {
   animation: gradient-pan 9s ease-in-out infinite;
 }
 
+/* The indigo counterpart to .gradient-text, for accent words sitting ON the
+   scarlet banner.
+
+   It runs DARK — void into the indigo ramp and back — rather than through a
+   light tint. Light indigo on scarlet lands around 2:1, under the 3:1 that
+   large text needs; anchoring the ends in the void keeps the whole sweep
+   legible while the indigo still reads as the colour of the word. */
+.gradient-text-indigo {
+  background: linear-gradient(
+    100deg,
+    var(--brand-void) 0%,
+    var(--brand-primary-deep) 28%,
+    /* #3812b0, not --brand-primary. The vivid indigo lands at 2.25:1 on the
+       scarlet banner, under the 3:1 large text needs; this is the brightest
+       point on the same hue ramp that still clears it, at 3.18:1. */
+      #3812b0 50%,
+    var(--brand-primary-deep) 72%,
+    var(--brand-void) 100%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 9s ease-in-out infinite;
+}
+
 /* ── Ambient loop motion for decorative shapes ─────────────── */
 .loop-float {
   animation: loop-float 11s ease-in-out infinite;

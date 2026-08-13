@@ -3,14 +3,16 @@ import { ArrowUpRight } from "lucide-react";
 import { Grain } from "@/components/Grain";
 import { JOURNEY, SERVICES } from "@/lib/data";
 
+/** A headline word and how it should be painted. Each card's accent word
+ *  takes the OTHER brand colour, so the pair reads as a set. */
+type Word = { text: string; tone: "plain" | "scarlet" | "indigo" };
+
 type Card = {
   href: string;
   eyebrow: string;
-  title: string;
-  accent: string;
+  headline: Word[];
   blurb: string;
   count: string;
-  /** Banner wash — scarlet for the work, indigo for the outcomes. */
   banner: string;
   preview: string[];
 };
@@ -19,11 +21,13 @@ const CARDS: Card[] = [
   {
     href: "/services",
     eyebrow: "Our services",
-    title: "WE BUILD",
-    accent: "INFLUENCE",
+    headline: [
+      { text: "WE BUILD", tone: "plain" },
+      { text: "INFLUENCE", tone: "indigo" },
+    ],
     blurb:
-      "Eleven disciplines under one roof — positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
-    count: `${SERVICES.length} disciplines`,
+      "Eleven services under one roof — positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
+    count: `${SERVICES.length} services`,
     banner:
       "linear-gradient(135deg, #4a1000 0%, #e63600 38%, #ff4000 68%, #ff7a3d 100%)",
     preview: SERVICES.slice(0, 4).map((s) => s.title),
@@ -31,16 +35,28 @@ const CARDS: Card[] = [
   {
     href: "/journey",
     eyebrow: "The journey",
-    title: "WHAT SUCCESS",
-    accent: "LOOKS LIKE",
+    headline: [
+      { text: "WHAT", tone: "plain" },
+      { text: "SUCCESS", tone: "scarlet" },
+      { text: "LOOKS LIKE", tone: "plain" },
+    ],
     blurb:
-      "Nine outcomes a deliberately built personal brand produces — a recognisable identity, earned authority and trust, then the opportunities, partnerships and customers that follow from them.",
-    count: `${JOURNEY.length} outcomes`,
+      "Nine success metrics a deliberately built personal brand produces — a recognisable identity, earned authority and trust, then the opportunities, partnerships and customers that follow from them.",
+    count: `${JOURNEY.length} success metrics`,
+    /* Deep vivid indigo, no light tint. The previous ramp ran up through
+       #7a5cff and #9385ff, which reads as periwinkle rather than as the
+       brand's indigo — a fourth colour by accident. */
     banner:
-      "linear-gradient(135deg, #2a0a94 0%, #4b1fe8 45%, #7a5cff 78%, #9385ff 100%)",
+      "linear-gradient(135deg, #12044a 0%, #2a0a94 42%, #4b1fe8 100%)",
     preview: JOURNEY.slice(0, 4).map((j) => j.title),
   },
 ];
+
+const TONE_CLASS: Record<Word["tone"], string> = {
+  plain: "text-paper",
+  scarlet: "gradient-text",
+  indigo: "gradient-text-indigo",
+};
 
 /**
  * The home page's entry points into the two long sections.
@@ -83,9 +99,13 @@ export function HomeSectionCards() {
                   <span className="font-body text-[10px] font-extrabold uppercase tracking-[0.22em] text-paper/85 sm:text-xs">
                     {card.eyebrow}
                   </span>
-                  <span className="mt-1 font-display text-2xl leading-none tracking-tight text-paper sm:text-4xl md:text-5xl">
-                    {card.title}{" "}
-                    <span className="text-void/85">{card.accent}</span>
+                  <span className="mt-1 font-display text-2xl leading-none tracking-tight sm:text-4xl md:text-5xl">
+                    {card.headline.map((word, i) => (
+                      <span key={word.text} className={TONE_CLASS[word.tone]}>
+                        {word.text}
+                        {i < card.headline.length - 1 ? " " : ""}
+                      </span>
+                    ))}
                   </span>
                 </div>
               </div>

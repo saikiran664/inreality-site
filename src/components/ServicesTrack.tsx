@@ -6,6 +6,62 @@ import { BRAND, SERVICES } from "@/lib/data";
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
+ * One half of the streak that appears to run through each card.
+ *
+ * Split into a stretchy flat rule plus a FIXED-width kink rather than one
+ * SVG spanning the whole gap: an SVG stretched to fill would have to distort
+ * the kink with it, turning the step into a lazy diagonal that changes shape
+ * at every viewport. Keeping the kink at a constant 132px means it is drawn
+ * identically on a phone and an ultrawide, and only the plain tail flexes.
+ */
+function Streak({ side }: { side: "left" | "right" }) {
+  const fade =
+    side === "left"
+      ? "linear-gradient(to right, rgba(255,64,0,0) 0%, rgba(255,64,0,0.5) 55%, #ff4000 100%)"
+      : "linear-gradient(to left, rgba(255,64,0,0) 0%, rgba(255,64,0,0.5) 55%, #ff4000 100%)";
+
+  const kink = (
+    <svg
+      width="104"
+      height="56"
+      viewBox="0 0 104 56"
+      aria-hidden="true"
+      data-kink
+      className="shrink-0"
+      style={side === "right" ? { transform: "scaleX(-1)" } : undefined}
+    >
+      <path
+        d="M 0 28 L 22 28 C 34 28 34 12 46 12 L 58 12 C 70 12 70 28 82 28 L 104 28"
+        stroke="#ff4000"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+        style={{ filter: "drop-shadow(0 0 6px rgba(255,64,0,0.55))" }}
+      />
+    </svg>
+  );
+
+  /* Shown from `lg`, not `sm`. Below roughly 1024px the card leaves under
+     100px either side, so the kink alone would fill the gap and the streak
+     would read as a stub rather than as a line passing through. */
+  return (
+    <span aria-hidden="true" className="hidden min-w-0 flex-1 items-center lg:flex">
+      {side === "left" ? (
+        <>
+          <span className="h-[2.5px] min-w-0 flex-1 rounded-full" style={{ background: fade }} />
+          {kink}
+        </>
+      ) : (
+        <>
+          {kink}
+          <span className="h-[2.5px] min-w-0 flex-1 rounded-full" style={{ background: fade }} />
+        </>
+      )}
+    </span>
+  );
+}
+
+/**
  * The eleven services as a scrollable track.
  *
  * Free-scrolling on purpose. The previous version pinned the section and
@@ -46,20 +102,22 @@ export function ServicesTrack() {
       <ol className="relative mt-14 sm:mt-20">
         {SERVICES.map((item, i) => {
           const Icon = item.icon;
+          // Padding on the row, not margins on the card: a `w-full` card plus
+          // horizontal margins measures 100% + margins and overflows its own
+          // row. `overflow-x: clip` on the body hides the scrollbar, so that
+          // clipped the card's right edge silently rather than showing it.
           return (
-            <li key={item.title} className="relative flex items-center py-3 sm:py-4">
-              {/* Left connector — hidden on phones, where there is no room
-                  either side of the card for it to read as a line. */}
-              <span
-                aria-hidden="true"
-                className="hidden h-px flex-1 sm:block"
-                style={{
-                  background:
-                    "linear-gradient(to right, rgba(255,64,0,0) 0%, rgba(255,64,0,0.55) 60%, rgba(255,122,61,0.85) 100%)",
-                }}
-              />
+            <li
+              key={item.title}
+              className="relative flex items-center px-5 py-3 sm:py-4 lg:px-0"
+            >
+              {/* Hidden on phones, where there is no room either side of the
+                  card for a streak to read as anything but clutter. */}
+              <Streak side="left" />
 
-              <article className="glass glass-sheen relative mx-5 w-full max-w-3xl shrink-0 overflow-hidden rounded-[20px] p-5 sm:mx-0 sm:rounded-[24px] sm:p-6 md:p-7">
+              {/* max-w-2xl, so that at the `lg` breakpoint there is room for
+                  the kink AND a run of flat line either side of it. */}
+              <article className="glass glass-sheen relative w-full max-w-2xl shrink-0 overflow-hidden rounded-[20px] p-5 sm:rounded-[24px] sm:p-6 md:p-7">
                 <div className="flex items-start gap-4">
                   <div className="tile-scarlet flex h-11 w-11 shrink-0 items-center justify-center rounded-xl sm:h-14 sm:w-14 sm:rounded-2xl">
                     <Icon className="h-5 w-5 text-paper sm:h-6 sm:w-6" strokeWidth={1.7} />
@@ -79,14 +137,7 @@ export function ServicesTrack() {
                 </div>
               </article>
 
-              <span
-                aria-hidden="true"
-                className="hidden h-px flex-1 sm:block"
-                style={{
-                  background:
-                    "linear-gradient(to left, rgba(255,64,0,0) 0%, rgba(255,64,0,0.55) 60%, rgba(255,122,61,0.85) 100%)",
-                }}
-              />
+              <Streak side="right" />
             </li>
           );
         })}
