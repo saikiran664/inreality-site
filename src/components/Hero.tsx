@@ -80,7 +80,7 @@ export function Hero() {
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
           <a
-            href="#services"
+            href="#work"
             className="font-body text-sm font-bold uppercase tracking-wider text-paper/70 underline decoration-scarlet/60 decoration-2 underline-offset-8 transition-colors hover:text-scarlet"
           >
             What we do

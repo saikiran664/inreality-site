@@ -14,7 +14,7 @@ import { Grain } from "@/components/Grain";
  */
 const LINKS = [
   { href: "/#philosophy", label: "Philosophy" },
-  { href: "/#services", label: "Services" },
+  { href: "/services", label: "Services" },
   { href: "/#why", label: "Why Us" },
   { href: "/#contact", label: "Contact" },
 ];

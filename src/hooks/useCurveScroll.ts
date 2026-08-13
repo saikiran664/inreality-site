@@ -25,7 +25,7 @@ export function useCurveScroll(itemCount: number, vhPerStep = 68) {
       if (!wrapperRef.current || !pinRef.current || itemCount < 2) return;
       const steps = itemCount - 1;
 
-      const trigger = ScrollTrigger.create({
+      ScrollTrigger.create({
         trigger: wrapperRef.current,
         start: "top top",
         end: "bottom bottom",
@@ -45,7 +45,12 @@ export function useCurveScroll(itemCount: number, vhPerStep = 68) {
         },
       });
 
-      return () => trigger.kill();
+      /**
+       * No manual cleanup: `useGSAP` records everything created inside it and
+       * reverts the lot when the effect re-runs, pin-spacer included. A hand
+       * -written `trigger.kill()` stops the trigger WITHOUT reverting the DOM,
+       * which leaves the spacer behind for the next run to trip over.
+       */
     },
     { scope: wrapperRef, dependencies: [itemCount, vhPerStep] },
   );

@@ -85,7 +85,15 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  /* `clip`, not `hidden`.
+     `overflow-x: hidden` forces the computed overflow-y to `auto`, which turns
+     BODY into a scroll container. ScrollTrigger then binds to body and reads
+     its scrollTop — permanently 0, because the document scrolls on the root
+     element, not on body. Pinned sections initialised correctly and then never
+     advanced: window.scrollY read 1800 while the trigger read 0.
+     `clip` suppresses horizontal overflow without creating a scroll container,
+     so the root stays the scroller. */
+  overflow-x: clip;
 }
 
 ::selection {

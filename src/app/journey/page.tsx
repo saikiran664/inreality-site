@@ -1,36 +1,68 @@
 import type { Metadata } from "next";
-import { CurveListPage } from "@/components/CurveListPage";
 import { Footer } from "@/components/Footer";
+import { JourneySlides } from "@/components/JourneySlides";
 import { SiteHeader } from "@/components/SiteHeader";
-import { JOURNEY } from "@/lib/data";
+import { BRAND, JOURNEY } from "@/lib/data";
 
+/** Under ~155 characters so it survives Google's truncation intact. */
 const DESCRIPTION =
-  "The nine outcomes a deliberately built personal brand produces — from a recognisable identity and earned authority through to partnerships, inbound customers and long-term influence.";
+  "The nine outcomes a built personal brand produces — identity, authority, trust, opportunities, partnerships, customers and long-term influence.";
 
 export const metadata: Metadata = {
-  title: "The journey",
+  title: "What a Personal Brand Produces",
   description: DESCRIPTION,
+  keywords: [
+    "personal branding results",
+    "founder authority",
+    "thought leadership outcomes",
+    "personal brand ROI",
+    "Inreality",
+  ],
   alternates: { canonical: "/journey" },
   openGraph: {
     title: "The journey — Inreality",
     description: DESCRIPTION,
     url: "/journey",
+    type: "website",
   },
+};
+
+const JOURNEY_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Outcomes of a built personal brand",
+  itemListElement: JOURNEY.map((j, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: j.title,
+    description: j.description,
+  })),
+};
+
+const BREADCRUMB_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BRAND.siteUrl },
+    { "@type": "ListItem", position: 2, name: "The journey", item: `${BRAND.siteUrl}/journey` },
+  ],
 };
 
 export default function JourneyPage() {
   return (
     <>
-      <SiteHeader />
-      <CurveListPage
-        eyebrow="What success looks like"
-        headingLead="THE JOURNEY"
-        headingAccent="AHEAD"
-        intro={DESCRIPTION}
-        items={JOURNEY}
-        homeAnchor="/#journey"
-        homeAnchorLabel="Back to the home page"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JOURNEY_SCHEMA) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_SCHEMA) }}
+      />
+      <SiteHeader />
+      <main>
+        <JourneySlides />
+      </main>
       <Footer />
     </>
   );

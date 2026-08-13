@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { BrandMark } from "@/components/BrandMark";
 
@@ -42,47 +43,47 @@ export function SiteHeader() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-4 sm:px-6 sm:py-5 md:px-12 lg:px-16">
-        <a
+        <Link
           href="/"
           onClick={() => window.dispatchEvent(new Event("inreality:replay-intro"))}
           title="Replay intro"
           className="shrink-0 transition-opacity duration-300 hover:opacity-70"
         >
           <BrandMark height={16} className="sm:!text-[20px]" />
-        </a>
+        </Link>
 
         {/* Full nav from md up; below that the section links move into a
             compact scrollable row so they stay reachable on phones. */}
         <nav className="hidden items-center gap-7 md:flex lg:gap-9">
           {LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="font-body text-sm font-bold uppercase tracking-wider text-paper/65 transition-colors duration-300 hover:text-scarlet"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <nav className="flex min-w-0 flex-1 items-center justify-end gap-4 overflow-x-auto md:hidden">
           {LINKS.slice(0, 2).map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="shrink-0 font-body text-[11px] font-bold uppercase tracking-wider text-paper/65"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <a
+        <Link
           href="/#contact"
           className="btn-scarlet shrink-0 rounded-full px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wider transition-transform duration-300 hover:scale-[1.05] sm:px-6 sm:py-2.5 sm:text-sm"
         >
           Work With Us
-        </a>
+        </Link>
       </div>
     </motion.header>
   );

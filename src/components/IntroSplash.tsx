@@ -27,8 +27,17 @@ export function IntroSplash() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seen = sessionStorage.getItem(STORAGE_KEY);
 
+    /**
+     * Both branches set state from inside the effect, which the rule flags as
+     * a cascading render — and here that is unavoidable rather than careless.
+     * The decision depends on sessionStorage and a media query, neither of
+     * which exists on the server, so the first render has to be the neutral
+     * "pending" state that matches the server's output. Deciding any earlier
+     * would be a hydration mismatch, which is the worse failure.
+     */
     if (seen || reduced) {
       sessionStorage.setItem(STORAGE_KEY, "1");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase("done");
       return;
     }
@@ -56,7 +65,6 @@ export function IntroSplash() {
       clearTimeout(toZoom);
       clearTimeout(toDone);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
   function finish() {
