@@ -34,52 +34,53 @@ export function ServicesSpine() {
   const [shift, setShift] = useState(0);
 
   /**
-   * Measured rather than computed from a fixed row height: the active row
-   * expands to show its description, so rows are not uniform and arithmetic
-   * on a constant height would drift further out of step with every item.
+   * Computes where the active node will sit ONCE EVERYTHING HAS SETTLED,
+   * rather than where it happens to sit right now.
    *
-   * Anchors on the NODE, not the row's centre. A row's centre moves as its
-   * own description opens, so anchoring there chases a value that is still
-   * animating; the node sits at a fixed offset from the row's top edge and
-   * stays put.
+   * Reading `row.offsetTop` directly looks correct and isn't: when the active
+   * row changes, the row being *left* is still collapsing, so every offsetTop
+   * below it is briefly too large. The old code measured that stale value,
+   * animated the list toward it, then re-measured on transitionend and
+   * animated back — the list visibly ran ~73px past its resting place and
+   * returned. Both moves were real animations toward two different targets.
+   *
+   * Subtracting each row's description block from its height gives that
+   * row's COLLAPSED height, and that subtraction is valid at any point during
+   * the transition — whatever the description currently contributes is
+   * exactly what gets removed. Summing the collapsed heights above the active
+   * row gives its settled position immediately, so there is nothing to
+   * correct afterwards and nothing to animate back from.
+   *
+   * Only one row is ever expanded, and a row's own expansion never moves its
+   * own top edge, so the active row's position depends only on collapsed
+   * rows above it.
    */
   const measure = useCallback(() => {
     const host = hostRef.current;
     const row = rowRefs.current[activeIndex];
     if (!host || !row) return;
+
+    // getBoundingClientRect, not offsetHeight: the latter rounds to whole
+    // pixels, and rounding once per row compounds into a visible drift by the
+    // eleventh — the anchor slid from 0.420 to 0.403 across the list.
+    let settledTop = 0;
+    for (let i = 0; i < activeIndex; i++) {
+      const r = rowRefs.current[i];
+      if (!r) continue;
+      const desc = r.querySelector<HTMLElement>("[data-desc]");
+      settledTop +=
+        r.getBoundingClientRect().height - (desc?.getBoundingClientRect().height ?? 0);
+    }
+
     const node = row.querySelector<HTMLElement>("[data-node]");
-    const nodeCentre = node
-      ? row.offsetTop + node.offsetTop + node.offsetHeight / 2
-      : row.offsetTop;
+    // Offset within its own row — unaffected by any expansion.
+    const nodeCentre = settledTop + (node ? node.offsetTop + node.offsetHeight / 2 : 0);
+
     setShift(host.clientHeight * ANCHOR - nodeCentre);
   }, [activeIndex]);
 
-  // Layout effect so the shift is applied in the same frame the expanded row
-  // is painted — otherwise the list visibly jumps on every checkpoint.
+  // Layout effect so the shift lands in the same frame the row change paints.
   useLayoutEffect(measure, [measure]);
-
-  /**
-   * Re-measure once the expand/collapse has finished.
-   *
-   * The rows above the active one settle immediately, but the row being
-   * *left* is still collapsing when the layout effect runs, so every
-   * offsetTop below it is momentarily stale. Listening for the transition to
-   * end corrects the anchor; the timeout is a fallback for the case where no
-   * transition fires at all (reduced motion collapses it to ~0ms).
-   */
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host) return;
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName === "grid-template-rows") measure();
-    };
-    host.addEventListener("transitionend", onEnd);
-    const t = window.setTimeout(measure, 580);
-    return () => {
-      host.removeEventListener("transitionend", onEnd);
-      window.clearTimeout(t);
-    };
-  }, [measure]);
 
   useEffect(() => {
     window.addEventListener("resize", measure, { passive: true });
@@ -252,8 +253,12 @@ export function ServicesSpine() {
                           </span>
                         </span>
 
-                        {/* Description, only on the active row */}
+                        {/* Description, only on the active row.
+                            `data-desc` marks it so the anchor maths can
+                            subtract it back out and recover the row's
+                            collapsed height mid-transition. */}
                         <span
+                          data-desc
                           className="grid transition-all duration-500 ease-out"
                           style={{
                             gridTemplateRows: isActive ? "1fr" : "0fr",
