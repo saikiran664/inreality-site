@@ -229,12 +229,20 @@ body {
    large text needs; anchoring the ends in the void keeps the whole sweep
    legible while the indigo still reads as the colour of the word. */
 .gradient-text-indigo {
+  /* Structurally identical to .gradient-text — white at both ends with the
+     accent sweeping through the middle — so INFLUENCE reads as the same
+     treatment as SUCCESS, just in the other brand colour.
+
+     Note this is the least legible of the options tried: white on scarlet is
+     3.51:1 and the indigo peak about 2.2:1, against 6.47:1 for the scrimmed
+     version. It clears the 3:1 bar for large display type at the white ends
+     only. Chosen deliberately for the look. */
   background: linear-gradient(
     100deg,
     var(--brand-paper) 0%,
-    var(--brand-accent-pale) 26%,
-    var(--brand-accent) 50%,
-    var(--brand-accent-pale) 74%,
+    var(--brand-accent-pale) 34%,
+    var(--brand-accent) 52%,
+    var(--brand-paper) 78%,
     var(--brand-paper) 100%
   );
   background-size: 260% 100%;
@@ -337,6 +345,16 @@ body {
     opacity: 0.75;
     transform: scale(1.07);
   }
+}
+
+/* Scroll without a visible bar — for the mobile nav row, where a scrollbar
+   under five links would read as a rule rather than as a control. */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Utilities ─────────────────────────────────────────────── */

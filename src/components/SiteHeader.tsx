@@ -42,48 +42,59 @@ export function SiteHeader() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-4 sm:px-6 sm:py-5 md:px-12 lg:px-16">
-        <Link
-          href="/"
-          onClick={() => window.dispatchEvent(new Event("inreality:replay-intro"))}
-          title="Replay intro"
-          className="shrink-0 transition-opacity duration-300 hover:opacity-70"
-        >
-          <BrandMark height={16} className="sm:!text-[20px]" />
-        </Link>
+      <div className="mx-auto w-full max-w-7xl px-5 py-3 sm:px-6 md:px-12 md:py-5 lg:px-16">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/"
+            onClick={() => window.dispatchEvent(new Event("inreality:replay-intro"))}
+            title="Replay intro"
+            className="shrink-0 transition-opacity duration-300 hover:opacity-70"
+          >
+            <BrandMark height={16} className="sm:!text-[20px]" />
+          </Link>
 
-        {/* Full nav from md up; below that the section links move into a
-            compact scrollable row so they stay reachable on phones. */}
-        <nav className="hidden items-center gap-7 md:flex lg:gap-9">
+          <nav className="hidden items-center gap-7 md:flex lg:gap-9">
+            {LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-body text-sm font-bold uppercase tracking-wider text-paper/65 transition-colors duration-300 hover:text-scarlet"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <Link
+            href="/#contact"
+            className="btn-scarlet shrink-0 rounded-full px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wider transition-transform duration-300 hover:scale-[1.05] sm:px-6 sm:py-2.5 sm:text-sm"
+          >
+            Work With Us
+          </Link>
+        </div>
+
+        {/*
+          Below md the links get a row of their own.
+
+          They used to share the top row with the wordmark and the button and
+          were cut to the first two to fit — so which links a visitor saw
+          depended on how wide their phone was, and on a narrow one even those
+          two were clipped mid-word. On their own row all five are present at
+          every width, and scroll horizontally if the screen is too narrow for
+          the full set. The negative margin lets that scroll run to the edge
+          of the screen instead of stopping inside the padding.
+        */}
+        <nav className="scrollbar-none -mx-5 mt-2.5 flex items-center gap-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6 md:hidden">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="font-body text-sm font-bold uppercase tracking-wider text-paper/65 transition-colors duration-300 hover:text-scarlet"
+              className="shrink-0 whitespace-nowrap font-body text-[11px] font-bold uppercase tracking-wider text-paper/65"
             >
               {link.label}
             </Link>
           ))}
         </nav>
-
-        <nav className="flex min-w-0 flex-1 items-center justify-end gap-4 overflow-x-auto md:hidden">
-          {LINKS.slice(0, 2).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="shrink-0 font-body text-[11px] font-bold uppercase tracking-wider text-paper/65"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <Link
-          href="/#contact"
-          className="btn-scarlet shrink-0 rounded-full px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wider transition-transform duration-300 hover:scale-[1.05] sm:px-6 sm:py-2.5 sm:text-sm"
-        >
-          Work With Us
-        </Link>
       </div>
     </motion.header>
   );
