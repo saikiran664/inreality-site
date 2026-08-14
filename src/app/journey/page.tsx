@@ -64,8 +64,8 @@ export default function JourneyPage() {
       <main className="bg-void">
         <JourneySlides />
         <PageClosing
-          lead="None of these arrive on their own, and none of them arrive at once."
-          body="Identity earns attention, attention earns authority, and authority is what turns into opportunities, partnerships and customers. Because each outcome makes the next one easier to reach, the work compounds rather than resetting every quarter — a personal brand built deliberately keeps paying back long after the campaign that started it, for this business and for whatever you build next."
+          lead="Build it once, and it keeps working long after you stop pushing."
+          body="Recognition opens the first door; authority keeps it open. After that the invitations, the partnerships and the customers start arriving on their own — because people already know who you are before you introduce yourself. That is the shift this work is for: from chasing attention to being sought out. And what you build belongs to you, not to a campaign, a platform, or a company you might one day leave. Whatever comes next, you start it already known."
           secondaryHref="/services"
           secondaryLabel="See the services"
         />

@@ -32,9 +32,9 @@ export function ServicesTrack() {
             <span className="gradient-text">INFLUENCE</span>
           </h1>
           <p className="mt-6 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:text-lg">
-            Eleven services, one dedicated team — everything needed to build a
-            personal brand that compounds. Positioning and story first, then the
-            content, production and reporting that carry it.
+            Eleven services, one plan — everything needed to build a personal
+            brand that compounds. Positioning and story first, then the content,
+            production and reporting that carry it.
           </p>
         </header>
 
@@ -69,8 +69,12 @@ export function ServicesTrack() {
         </ol>
       </div>
 
+      {/* No claim here about who does the work or how the team is staffed —
+          that is an operational promise only Inreality can make, and the
+          earlier draft made one that wasn't true. What is claimed is about
+          the method, which the rest of the page already evidences. */}
       <PageClosing
-        lead="One dedicated team, working to your requirements — not a rotating cast working to a template."
+        lead="Shaped around your requirements, never around a template."
         body="The eleven services above are not a menu to pick from in isolation. They are combined into a single plan shaped around your goals, your audience and the way you actually work, so the pieces reinforce each other instead of pulling in different directions. The end result is a personal brand that is unmistakably yours, built to a standard you would be happy to be judged on."
         secondaryHref="/journey"
         secondaryLabel="See what success looks like"
