@@ -22,7 +22,21 @@ export function IntroSplash() {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
+
+    /**
+     * A hash means the visitor asked for a particular section — most often by
+     * following an in-site link like /#faq from another page.
+     *
+     * The unconditional `scrollTo(0, 0)` below used to cancel that. Arriving
+     * by full page load happened to work, because the browser re-applied its
+     * own jump to the anchor afterwards; arriving by client-side navigation
+     * did not, because nothing re-applied it, so every /#section link from
+     * another page silently dumped the reader at the top of the home page.
+     */
+    const hash = window.location.hash;
+    const target = hash.length > 1 ? document.getElementById(hash.slice(1)) : null;
+
+    if (!hash) window.scrollTo(0, 0);
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seen = sessionStorage.getItem(STORAGE_KEY);
@@ -35,10 +49,19 @@ export function IntroSplash() {
      * "pending" state that matches the server's output. Deciding any earlier
      * would be a hydration mismatch, which is the worse failure.
      */
-    if (seen || reduced) {
+    // A deep link to a section is a request for that section, not for the
+    // splash — so a hash skips the intro the same way a repeat visit does.
+    if (seen || reduced || hash) {
       sessionStorage.setItem(STORAGE_KEY, "1");
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase("done");
+      // After paint, so the jump lands against the final layout rather than
+      // whatever height the page had mid-hydration.
+      if (target) {
+        requestAnimationFrame(() =>
+          target.scrollIntoView({ behavior: "auto", block: "start" }),
+        );
+      }
       return;
     }
 
