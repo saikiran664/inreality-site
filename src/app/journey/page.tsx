@@ -65,7 +65,7 @@ export default function JourneyPage() {
         <JourneySlides />
         <PageClosing
           lead="Build it once, and it keeps working long after you stop pushing."
-          body="Recognition opens the first door; authority keeps it open. After that the invitations, the partnerships and the customers start arriving on their own — because people already know who you are before you introduce yourself. That is the shift this work is for: from chasing attention to being sought out. And what you build belongs to you, not to a campaign, a platform, or a company you might one day leave. Whatever comes next, you start it already known."
+          body="You have already done the hard part — the work, the judgement, the years behind it. What is missing isn't more effort; it's the reach that work deserves. Build the brand and the room changes: people arrive knowing your name, conversations start further along, and the opportunities you once chased begin arriving on their own. That authority is yours. It travels with you, outlasts any campaign, and compounds every year you keep showing up as yourself."
           secondaryHref="/services"
           secondaryLabel="See the services"
         />

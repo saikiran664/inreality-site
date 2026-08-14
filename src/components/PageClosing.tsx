@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
+import { Grain } from "@/components/Grain";
 import { BRAND } from "@/lib/data";
 
 /**
@@ -23,7 +24,21 @@ export function PageClosing({
   secondaryLabel: string;
 }) {
   return (
-    <section className="relative border-t border-white/10">
+    <section className="relative overflow-hidden border-t border-white/10 bg-void">
+      {/*
+        Its own ambient layer, rather than relying on an ancestor's.
+
+        On the journey page the only gradient field lives inside the pinned
+        box and stops exactly where this block starts, so the closing sat on
+        flat #07050f while every other section had light on it — noticeably
+        darker and flatter than the rest of the site. On the services page the
+        field does reach here, but it is stretched over the full height of the
+        list, so its radials are too diffuse to register by the time they get
+        this far down. A field scoped to this section fixes both.
+      */}
+      <div className="gradient-field" />
+      <Grain />
+
       <div className="relative mx-auto w-full max-w-3xl px-5 py-20 text-center sm:px-6 sm:py-24 md:px-12">
         <p className="font-body text-base font-semibold leading-relaxed text-paper/85 sm:text-lg">
           {lead}

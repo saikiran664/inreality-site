@@ -75,7 +75,7 @@ export function ServicesTrack() {
           the method, which the rest of the page already evidences. */}
       <PageClosing
         lead="Shaped around your requirements, never around a template."
-        body="The eleven services above are not a menu to pick from in isolation. They are combined into a single plan shaped around your goals, your audience and the way you actually work, so the pieces reinforce each other instead of pulling in different directions. The end result is a personal brand that is unmistakably yours, built to a standard you would be happy to be judged on."
+        body="The eleven services are combined into a single plan shaped around your goals, your audience and the way you actually work, so the pieces reinforce each other instead of pulling in different directions. The end result is a personal brand that is unmistakably yours, built to a standard you would be happy to be judged on."
         secondaryHref="/journey"
         secondaryLabel="See what success looks like"
       />
