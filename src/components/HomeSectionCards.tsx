@@ -95,6 +95,18 @@ export function HomeSectionCards() {
                 style={{ background: card.banner }}
               >
                 <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_0%,rgba(255,255,255,0.28),transparent_60%)]" />
+                {/*
+                  Scrim under the headline.
+
+                  Scarlet has a luminance of 0.249, which means only DARK text
+                  clears 4.5:1 on it — no genuinely vivid indigo can, at any
+                  lightness. Rather than compromise the accent colour into a
+                  near-black that stops reading as indigo, the type gets its
+                  own darker ground. The banner keeps its colour where it
+                  matters (the top two thirds) and the words sit on something
+                  they can actually be read against.
+                */}
+                <div className="absolute inset-x-0 bottom-0 h-3/4 bg-[linear-gradient(to_top,rgba(6,4,14,0.92)_0%,rgba(6,4,14,0.72)_38%,transparent_100%)]" />
                 <div className="relative flex h-full flex-col justify-end p-5 sm:p-7 md:p-8">
                   <span className="font-body text-[10px] font-extrabold uppercase tracking-[0.22em] text-paper/85 sm:text-xs">
                     {card.eyebrow}

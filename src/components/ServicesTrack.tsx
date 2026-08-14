@@ -6,55 +6,106 @@ import { BRAND, SERVICES } from "@/lib/data";
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * One half of the streak that appears to run through each card.
+ * Ribbon gradients, defined once for the whole page.
  *
- * Split into a stretchy flat rule plus a FIXED-width kink rather than one
- * SVG spanning the whole gap: an SVG stretched to fill would have to distort
- * the kink with it, turning the step into a lazy diagonal that changes shape
- * at every viewport. Keeping the kink at a constant 132px means it is drawn
- * identically on a phone and an ultrawide, and only the plain tail flexes.
+ * The ribbon is drawn 22 times. Repeating a `<defs>` inside each copy would
+ * put 22 elements with the same id in the document — browsers resolve every
+ * reference to whichever came first, so it happens to look right while being
+ * invalid, and breaks the moment that first copy is removed.
+ */
+function RibbonDefs() {
+  return (
+    <svg aria-hidden="true" className="absolute h-0 w-0" focusable="false">
+      <defs>
+        {/* Runs across the ribbon's thickness, not along its length. A lit top
+            edge falling to a shaded underside is what reads as a solid strip
+            rather than a drawn line. */}
+        <linearGradient id="svcRibbon" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffb089" />
+          <stop offset="26%" stopColor="#ff7a3d" />
+          <stop offset="58%" stopColor="#ff4000" />
+          <stop offset="100%" stopColor="#7c2408" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/**
+ * One half of the ribbon that appears to pass behind each card.
+ *
+ * A stretchy tail plus a FIXED-width sweep: an SVG stretched to fill the gap
+ * would distort its curve with it, giving a different shape at every viewport.
+ *
+ * The previous version was a stroked path with a square-shouldered step in it,
+ * which read as a heart-rate trace. This is a filled band instead — tapered
+ * from thin at the screen edge to full thickness at the card, with the rise
+ * eased across the whole width so there is no shoulder to spike.
  */
 function Streak({ side }: { side: "left" | "right" }) {
-  const fade =
-    side === "left"
-      ? "linear-gradient(to right, rgba(255,64,0,0) 0%, rgba(255,64,0,0.5) 55%, #ff4000 100%)"
-      : "linear-gradient(to left, rgba(255,64,0,0) 0%, rgba(255,64,0,0.5) 55%, #ff4000 100%)";
-
-  const kink = (
+  const sweep = (
     <svg
-      width="104"
-      height="56"
-      viewBox="0 0 104 56"
+      width="184"
+      height="72"
+      viewBox="0 0 184 72"
       aria-hidden="true"
       data-kink
       className="shrink-0"
       style={side === "right" ? { transform: "scaleX(-1)" } : undefined}
     >
-      <path
-        d="M 0 28 L 22 28 C 34 28 34 12 46 12 L 58 12 C 70 12 70 28 82 28 L 104 28"
-        stroke="#ff4000"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-        style={{ filter: "drop-shadow(0 0 6px rgba(255,64,0,0.55))" }}
-      />
+      <g style={{ filter: "drop-shadow(0 3px 7px rgba(255,64,0,0.38))" }}>
+        {/* Enters and leaves on the row's centreline (y=36) so it lines up
+            with the tail on one side and the card on the other, swelling and
+            lifting in between. Thin at the screen edge, full thickness at the
+            card, which is what gives it the sense of turning toward you. */}
+        <path
+          d="M 0 33 C 60 33 60 18 100 18 C 140 18 150 30 184 30
+             L 184 42 C 150 42 140 26 100 26 C 60 26 60 39 0 39 Z"
+          fill="url(#svcRibbon)"
+        />
+        {/* Specular sliver along the lit edge — the cue that sells thickness. */}
+        <path
+          d="M 0 33.5 C 60 33.5 60 18.5 100 18.5 C 140 18.5 150 30.5 184 30.5"
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="1.25"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </g>
     </svg>
   );
 
-  /* Shown from `lg`, not `sm`. Below roughly 1024px the card leaves under
-     100px either side, so the kink alone would fill the gap and the streak
-     would read as a stub rather than as a line passing through. */
+  /* A tapered strip, not a hairline, so the tail reads as the same object as
+     the sweep it runs into. Fades out toward the screen edge. */
+  const tail = (
+    <span
+      className="h-[7px] min-w-0 flex-1 self-center"
+      style={{
+        background:
+          side === "left"
+            ? "linear-gradient(to right, rgba(255,64,0,0) 0%, rgba(255,64,0,0.45) 40%, #ff4000 100%)"
+            : "linear-gradient(to left, rgba(255,64,0,0) 0%, rgba(255,64,0,0.45) 40%, #ff4000 100%)",
+        clipPath:
+          side === "left"
+            ? "polygon(0 42%, 100% 0, 100% 100%, 0 58%)"
+            : "polygon(0 0, 100% 42%, 100% 58%, 0 100%)",
+      }}
+    />
+  );
+
+  /* Shown from `lg`. Below roughly 1024px the card leaves under 100px either
+     side, so the sweep alone fills the gap and the ribbon reads as a stub. */
   return (
     <span aria-hidden="true" className="hidden min-w-0 flex-1 items-center lg:flex">
       {side === "left" ? (
         <>
-          <span className="h-[2.5px] min-w-0 flex-1 rounded-full" style={{ background: fade }} />
-          {kink}
+          {tail}
+          {sweep}
         </>
       ) : (
         <>
-          {kink}
-          <span className="h-[2.5px] min-w-0 flex-1 rounded-full" style={{ background: fade }} />
+          {sweep}
+          {tail}
         </>
       )}
     </span>
@@ -79,6 +130,7 @@ export function ServicesTrack() {
     <main className="relative overflow-hidden bg-void">
       <div className="gradient-field" />
       <Grain />
+      <RibbonDefs />
 
       <div className="relative mx-auto w-full max-w-6xl px-5 pt-28 sm:px-6 sm:pt-32 md:px-12 md:pt-36">
         <header>

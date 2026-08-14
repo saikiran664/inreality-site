@@ -231,14 +231,11 @@ body {
 .gradient-text-indigo {
   background: linear-gradient(
     100deg,
-    var(--brand-void) 0%,
-    var(--brand-primary-deep) 28%,
-    /* #3812b0, not --brand-primary. The vivid indigo lands at 2.25:1 on the
-       scarlet banner, under the 3:1 large text needs; this is the brightest
-       point on the same hue ramp that still clears it, at 3.18:1. */
-      #3812b0 50%,
-    var(--brand-primary-deep) 72%,
-    var(--brand-void) 100%
+    var(--brand-paper) 0%,
+    var(--brand-accent-pale) 26%,
+    var(--brand-accent) 50%,
+    var(--brand-accent-pale) 74%,
+    var(--brand-paper) 100%
   );
   background-size: 260% 100%;
   -webkit-background-clip: text;
