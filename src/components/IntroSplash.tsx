@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BrandMark } from "@/components/BrandMark";
-import { GlassX } from "@/components/GlassX";
 import { Grain } from "@/components/Grain";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -120,34 +119,36 @@ export function IntroSplash() {
             <div className="gradient-field" />
             <Grain />
 
-            <div className="relative flex flex-col items-center gap-5 px-6 sm:gap-7">
+            {/*
+              Wordmark only.
+
+              The glass × that used to sit under it belongs to a collaboration
+              lockup — "<partner> × Inreality" — so on Inreality's own site it
+              was a symbol with nothing on the other side of it. GlassX is
+              still in the codebase for the pitch sites, which do have a second
+              name to put there.
+
+              With the × gone the wordmark carries the exit on its own: it
+              lifts slightly as the iris closes, so the intro still reads as
+              moving through something rather than simply switching off.
+            */}
+            <div className="relative flex flex-col items-center px-6">
               <motion.div
                 initial={{ opacity: 0, y: 18, filter: "blur(8px)" }}
                 animate={{
                   opacity: zooming ? 0 : 1,
                   y: 0,
                   filter: "blur(0px)",
-                }}
-                transition={{ duration: 0.6, ease: EASE, delay: 0.08 }}
-              >
-                <BrandMark height={38} className="sm:!text-[58px] md:!text-[72px]" />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.35 }}
-                animate={{
-                  opacity: zooming ? [1, 1, 0] : 1,
-                  scale: zooming ? 9 : 1,
+                  scale: zooming ? 1.14 : 1,
                 }}
                 transition={
                   zooming
-                    ? { duration: 0.85, ease: [0.66, 0, 0.34, 1], times: [0, 0.5, 1] }
-                    : { duration: 0.6, ease: EASE, delay: 0.3 }
+                    ? { duration: 0.85, ease: [0.66, 0, 0.34, 1] }
+                    : { duration: 0.6, ease: EASE, delay: 0.08 }
                 }
                 style={{ willChange: "transform", transform: "translateZ(0)" }}
               >
-                {/* Built at 4x and scaled down, so the zoom stays sharp. */}
-                <GlassX size={64} renderSize={300} slices={15} />
+                <BrandMark height={40} className="sm:!text-[62px] md:!text-[78px]" />
               </motion.div>
             </div>
 
