@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { JourneySlides } from "@/components/JourneySlides";
+import { PageClosing } from "@/components/PageClosing";
 import { SiteHeader } from "@/components/SiteHeader";
 import { BRAND, JOURNEY } from "@/lib/data";
 
@@ -60,8 +61,14 @@ export default function JourneyPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_SCHEMA) }}
       />
       <SiteHeader />
-      <main>
+      <main className="bg-void">
         <JourneySlides />
+        <PageClosing
+          lead="None of these arrive on their own, and none of them arrive at once."
+          body="Identity earns attention, attention earns authority, and authority is what turns into opportunities, partnerships and customers. Because each outcome makes the next one easier to reach, the work compounds rather than resetting every quarter — a personal brand built deliberately keeps paying back long after the campaign that started it, for this business and for whatever you build next."
+          secondaryHref="/services"
+          secondaryLabel="See the services"
+        />
       </main>
       <Footer />
     </>

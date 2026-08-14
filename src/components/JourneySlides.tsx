@@ -333,10 +333,10 @@ export function JourneySlides() {
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
               <Link
-                href="/services"
+                href="/#faq"
                 className="font-body text-xs font-bold uppercase tracking-wider text-paper/65 underline decoration-scarlet/60 decoration-2 underline-offset-8 transition-colors hover:text-scarlet sm:text-sm"
               >
-                See the services
+                Common questions
               </Link>
             </div>
           </div>
