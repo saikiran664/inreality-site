@@ -95,7 +95,12 @@ export function HomeSectionCards() {
                 whatever room a fixed height happens to leave over.
               */}
               <div
-                className="relative flex min-h-28 w-full flex-col justify-end p-5 sm:min-h-36 sm:p-7 md:min-h-44 md:p-8"
+                /* justify-center, not justify-end. With the content pushed to
+                   the bottom, every pixel the min-height gave over the content
+                   pooled above it — 43px of air on top against 20px below.
+                   Centring splits that slack, so the type sits evenly in the
+                   band. */
+                className="relative flex min-h-28 w-full flex-col justify-center p-5 sm:min-h-36 sm:p-7 md:min-h-44 md:p-8"
                 style={{ background: card.banner }}
               >
                 <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_0%,rgba(255,255,255,0.28),transparent_60%)]" />
