@@ -52,10 +52,21 @@ const CARDS: Card[] = [
   },
 ];
 
+/**
+ * Both accent words are the same white gloss now.
+ *
+ * Colouring them meant each card's accent had to survive its own banner, and
+ * on the scarlet one nothing did: vivid indigo measured 2.25:1 and even white
+ * only reaches 3.51:1. A shine carried by luminance alone sidesteps that —
+ * every stop is light, so it reads the same on both grounds.
+ *
+ * The `tone` distinction is kept because the two cards may want to diverge
+ * again, and a single class name here is the whole change if so.
+ */
 const TONE_CLASS: Record<Word["tone"], string> = {
   plain: "text-paper",
-  scarlet: "gradient-text",
-  indigo: "gradient-text-indigo",
+  scarlet: "gradient-text-gloss",
+  indigo: "gradient-text-gloss",
 };
 
 /**
@@ -89,9 +100,13 @@ export function HomeSectionCards() {
               href={card.href}
               className="group glass glass-sheen relative block overflow-hidden rounded-[24px] outline-none transition-transform duration-500 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-scarlet sm:rounded-[30px]"
             >
-              {/* Banner */}
+              {/* Banner.
+                  Height reduced alongside the larger headline. The type sits
+                  at the bottom of this box, so the empty area was all above
+                  it — enlarging the words alone still left a band of colour
+                  doing nothing. Both together close the gap. */}
               <div
-                className="relative h-32 w-full sm:h-44 md:h-52"
+                className="relative h-28 w-full sm:h-36 md:h-44"
                 style={{ background: card.banner }}
               >
                 <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_0%,rgba(255,255,255,0.28),transparent_60%)]" />
@@ -99,7 +114,11 @@ export function HomeSectionCards() {
                   <span className="font-body text-[10px] font-extrabold uppercase tracking-[0.22em] text-paper/85 sm:text-xs">
                     {card.eyebrow}
                   </span>
-                  <span className="mt-1 font-display text-2xl leading-none tracking-tight sm:text-4xl md:text-5xl">
+                  {/* Sized up to fill the banner. At the previous scale the
+                      headline sat in the bottom strip with most of the panel
+                      empty above it, which read as an unfinished crop rather
+                      than as deliberate space. */}
+                  <span className="mt-1.5 font-display text-[9vw] leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.5rem]">
                     {card.headline.map((word, i) => (
                       <span key={word.text} className={TONE_CLASS[word.tone]}>
                         {word.text}

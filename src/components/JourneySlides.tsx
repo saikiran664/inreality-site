@@ -11,7 +11,6 @@ import { BRAND, JOURNEY } from "@/lib/data";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const EASE = [0.16, 1, 0.3, 1] as const;
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 const VB_WIDTH = 200;
 const MID_X = 100;
@@ -36,9 +35,8 @@ function verticalWave(count: number, spacing: number, amplitude: number): Point[
  */
 export function JourneySlides() {
   const items = JOURNEY;
-  const { wrapperRef, pinRef, activeIndex, progress, wrapperHeight } = useCurveScroll(
-    items.length,
-  );
+  // `progress` is deliberately not read. See the note on drawnFrac below.
+  const { wrapperRef, pinRef, activeIndex, wrapperHeight } = useCurveScroll(items.length);
   const steps = items.length - 1;
 
   const hostRef = useRef<HTMLDivElement>(null);
@@ -149,14 +147,27 @@ export function JourneySlides() {
   }, [path, points]);
 
   const measured = !!curve && curve.fracs.length === points.length && points.length > 1;
-  const clamped = Math.max(0, Math.min(1, progress));
 
+  /**
+   * Pinned to the active checkpoint, NOT to continuous scroll progress.
+   *
+   * Driving this from `progress` meant the stroke tracked every scroll
+   * increment: a partial scroll pushed the line most of the way to the next
+   * point, and GSAP's snap then pulled the scroll back, dragging the line
+   * back with it. The line appeared to lunge forward and retreat on almost
+   * every gesture.
+   *
+   * Reading the active index instead means the value only changes when the
+   * checkpoint actually changes. A partial scroll moves nothing; crossing the
+   * midpoint moves the line once, to the next point, and it stays there. The
+   * short transitions on the stroke and the rail below are safe for the same
+   * reason — they animate a value that settles, rather than chasing one that
+   * is still being scrubbed.
+   */
   const drawnFrac = useMemo(() => {
     if (!curve || !measured) return 0;
-    const scaled = clamped * steps;
-    const i = Math.min(steps - 1, Math.max(0, Math.floor(scaled)));
-    return lerp(curve.fracs[i], curve.fracs[i + 1], scaled - i);
-  }, [clamped, curve, measured, steps]);
+    return curve.fracs[Math.max(0, Math.min(curve.fracs.length - 1, activeIndex))];
+  }, [curve, measured, activeIndex]);
 
   /** The node, read off the same samples the stroke length comes from, so the
    *  two cannot disagree. */
@@ -216,10 +227,16 @@ export function JourneySlides() {
                 </filter>
               </defs>
 
-              {/* No CSS transition on the pan: ScrollTrigger's scrub already
-                  eases progress, and transitioning on top of it means every
-                  tick restarts the transition and the rail never catches up. */}
-              <g style={{ transform: `translateY(${shiftY}px)` }}>
+              {/* A transition IS safe here now. It was not while the pan
+                  followed scrub — every tick restarted it and the rail never
+                  caught up — but the offset is keyed to the active checkpoint,
+                  so it changes once per step and settles. */}
+              <g
+                style={{
+                  transform: `translateY(${shiftY}px)`,
+                  transition: "transform 0.45s cubic-bezier(.16,1,.3,1)",
+                }}
+              >
                 <path
                   ref={trackRef}
                   d={path}
@@ -239,6 +256,7 @@ export function JourneySlides() {
                   filter="url(#jrnRailGlow)"
                   strokeDasharray="1 1"
                   strokeDashoffset={1 - drawnFrac}
+                  style={{ transition: "stroke-dashoffset 0.45s cubic-bezier(.16,1,.3,1)" }}
                 />
 
                 {points.map((p, i) => {
