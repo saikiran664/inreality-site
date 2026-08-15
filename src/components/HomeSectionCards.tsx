@@ -82,28 +82,42 @@ export function HomeSectionCards() {
               href={card.href}
               className="group glass glass-sheen relative block overflow-hidden rounded-[24px] outline-none transition-transform duration-500 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-scarlet sm:rounded-[30px]"
             >
-              {/* Banner.
-                  Height reduced alongside the larger headline. The type sits
-                  at the bottom of this box, so the empty area was all above
-                  it — enlarging the words alone still left a band of colour
-                  doing nothing. Both together close the gap. */}
+              {/*
+                Banner sized by its content, with a floor — not a fixed height.
+
+                A fixed height only suits a headline that fits on one line.
+                "WE BUILD INFLUENCE" does at every width; "WHAT SUCCESS LOOKS
+                LIKE" wraps to two on a phone, and had to cram both lines into
+                a box built for one, so the journey card looked squeezed while
+                the services card looked right. The min-height keeps the
+                one-line case from collapsing, and padding — identical on both
+                cards — now sets the spacing around the type instead of
+                whatever room a fixed height happens to leave over.
+              */}
               <div
-                className="relative h-28 w-full sm:h-36 md:h-44"
+                className="relative flex min-h-28 w-full flex-col justify-end p-5 sm:min-h-36 sm:p-7 md:min-h-44 md:p-8"
                 style={{ background: card.banner }}
               >
                 <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_80%_0%,rgba(255,255,255,0.28),transparent_60%)]" />
-                <div className="relative flex h-full flex-col justify-end p-5 sm:p-7 md:p-8">
-                  <span className="font-body text-[10px] font-extrabold uppercase tracking-[0.22em] text-paper/85 sm:text-xs">
-                    {card.eyebrow}
-                  </span>
-                  {/* Sized up to fill the banner. At the previous scale the
-                      headline sat in the bottom strip with most of the panel
-                      empty above it, which read as an unfinished crop rather
-                      than as deliberate space. */}
-                  <span className="mt-1.5 font-display text-[9vw] leading-[0.95] tracking-tight text-paper sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-                    {card.headline}
-                  </span>
-                </div>
+                <span className="relative font-body text-[10px] font-extrabold uppercase tracking-[0.22em] text-paper/85 sm:text-xs">
+                  {card.eyebrow}
+                </span>
+                {/*
+                  7.8vw on phones, not 9vw.
+
+                  At 9vw the longer headline measured 312px against 294px of
+                  usable width and wrapped, so one card showed a single line
+                  with room around it while the other showed two lines filling
+                  the box — the same type size reading as two different
+                  treatments. 7.8vw keeps the longest headline on one line
+                  down to 320px, so both cards have the same shape.
+
+                  text-balance is a safety net: if a longer headline is ever
+                  added it splits evenly instead of orphaning one word.
+                */}
+                <span className="relative mt-1.5 font-display text-[7.8vw] leading-[0.95] tracking-tight text-balance text-paper sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+                  {card.headline}
+                </span>
               </div>
 
               {/* Body */}
