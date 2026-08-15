@@ -221,59 +221,6 @@ body {
   animation: gradient-pan 9s ease-in-out infinite;
 }
 
-/* The indigo counterpart to .gradient-text, for accent words sitting ON the
-   scarlet banner.
-
-   It runs DARK — void into the indigo ramp and back — rather than through a
-   light tint. Light indigo on scarlet lands around 2:1, under the 3:1 that
-   large text needs; anchoring the ends in the void keeps the whole sweep
-   legible while the indigo still reads as the colour of the word. */
-/* White only, with a shine travelling through it.
-   The colour is carried entirely by luminance — dim white into pure white and
-   back — so the word reads as glossy type rather than as a second brand
-   colour, and it sits on either banner without a contrast problem, since
-   every stop is light. */
-.gradient-text-gloss {
-  background: linear-gradient(
-    100deg,
-    rgba(244, 242, 249, 0.62) 0%,
-    rgba(244, 242, 249, 0.72) 28%,
-    #ffffff 48%,
-    rgba(255, 255, 255, 0.98) 56%,
-    rgba(244, 242, 249, 0.68) 82%,
-    rgba(244, 242, 249, 0.62) 100%
-  );
-  background-size: 260% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-pan 9s ease-in-out infinite;
-}
-
-.gradient-text-indigo {
-  /* Structurally identical to .gradient-text — white at both ends with the
-     accent sweeping through the middle — so INFLUENCE reads as the same
-     treatment as SUCCESS, just in the other brand colour.
-
-     Note this is the least legible of the options tried: white on scarlet is
-     3.51:1 and the indigo peak about 2.2:1, against 6.47:1 for the scrimmed
-     version. It clears the 3:1 bar for large display type at the white ends
-     only. Chosen deliberately for the look. */
-  background: linear-gradient(
-    100deg,
-    var(--brand-paper) 0%,
-    var(--brand-accent-pale) 34%,
-    var(--brand-accent) 52%,
-    var(--brand-paper) 78%,
-    var(--brand-paper) 100%
-  );
-  background-size: 260% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-pan 9s ease-in-out infinite;
-}
-
 /* ── Ambient loop motion for decorative shapes ─────────────── */
 .loop-float {
   animation: loop-float 11s ease-in-out infinite;

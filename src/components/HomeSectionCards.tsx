@@ -3,14 +3,19 @@ import { ArrowUpRight } from "lucide-react";
 import { Grain } from "@/components/Grain";
 import { JOURNEY, SERVICES } from "@/lib/data";
 
-/** A headline word and how it should be painted. Each card's accent word
- *  takes the OTHER brand colour, so the pair reads as a set. */
-type Word = { text: string; tone: "plain" | "scarlet" | "indigo" };
-
+/**
+ * Headlines are plain white.
+ *
+ * They carried a per-word accent through several forms — indigo, then scarlet,
+ * then a white gloss sweep. All of them competed with the banner they sat on,
+ * which is already a full-bleed colour field doing the work of separating the
+ * two cards. The type had nothing left to add by being coloured too, so the
+ * word-level structure is gone with it and a headline is just a string.
+ */
 type Card = {
   href: string;
   eyebrow: string;
-  headline: Word[];
+  headline: string;
   blurb: string;
   count: string;
   banner: string;
@@ -21,10 +26,7 @@ const CARDS: Card[] = [
   {
     href: "/services",
     eyebrow: "Our services",
-    headline: [
-      { text: "WE BUILD", tone: "plain" },
-      { text: "INFLUENCE", tone: "indigo" },
-    ],
+    headline: "WE BUILD INFLUENCE",
     blurb:
       "Eleven services under one roof — positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
     count: `${SERVICES.length} services`,
@@ -35,11 +37,7 @@ const CARDS: Card[] = [
   {
     href: "/journey",
     eyebrow: "The journey",
-    headline: [
-      { text: "WHAT", tone: "plain" },
-      { text: "SUCCESS", tone: "scarlet" },
-      { text: "LOOKS LIKE", tone: "plain" },
-    ],
+    headline: "WHAT SUCCESS LOOKS LIKE",
     blurb:
       "Nine success metrics a deliberately built personal brand produces — a recognisable identity, earned authority and trust, then the opportunities, partnerships and customers that follow from them.",
     count: `${JOURNEY.length} success metrics`,
@@ -53,22 +51,6 @@ const CARDS: Card[] = [
 ];
 
 /**
- * Both accent words are the same white gloss now.
- *
- * Colouring them meant each card's accent had to survive its own banner, and
- * on the scarlet one nothing did: vivid indigo measured 2.25:1 and even white
- * only reaches 3.51:1. A shine carried by luminance alone sidesteps that —
- * every stop is light, so it reads the same on both grounds.
- *
- * The `tone` distinction is kept because the two cards may want to diverge
- * again, and a single class name here is the whole change if so.
- */
-const TONE_CLASS: Record<Word["tone"], string> = {
-  plain: "text-paper",
-  scarlet: "gradient-text-gloss",
-  indigo: "gradient-text-gloss",
-};
-
 /**
  * The home page's entry points into the two long sections.
  *
@@ -118,13 +100,8 @@ export function HomeSectionCards() {
                       headline sat in the bottom strip with most of the panel
                       empty above it, which read as an unfinished crop rather
                       than as deliberate space. */}
-                  <span className="mt-1.5 font-display text-[9vw] leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-                    {card.headline.map((word, i) => (
-                      <span key={word.text} className={TONE_CLASS[word.tone]}>
-                        {word.text}
-                        {i < card.headline.length - 1 ? " " : ""}
-                      </span>
-                    ))}
+                  <span className="mt-1.5 font-display text-[9vw] leading-[0.95] tracking-tight text-paper sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+                    {card.headline}
                   </span>
                 </div>
               </div>
