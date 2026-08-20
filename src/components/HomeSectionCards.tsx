@@ -28,7 +28,7 @@ const CARDS: Card[] = [
     eyebrow: "Our services",
     headline: "WE BUILD INFLUENCE",
     blurb:
-      "Eleven services under one roof - check out our end-to-end services.",
+      "Eleven services under one roof, check out our end-to-end services.",
     count: `${SERVICES.length} services`,
     banner:
       "linear-gradient(135deg, #4a1000 0%, #e63600 38%, #ff4000 68%, #ff7a3d 100%)",
