@@ -148,7 +148,15 @@ body {
   );
   background-size: 180% 100%;
   color: var(--brand-void);
-  box-shadow: 0 18px 45px -14px rgba(255, 64, 0, 0.7);
+  /* A halo, not a cast shadow.
+     This was `0 18px 45px -14px` — an 18px drop against 45px of blur, so the
+     scarlet pooled well below the button and read as a light source raking in
+     from somewhere above, which nothing else on the page implies. The glow is
+     symmetrical now, as a lit object's would be, with a small neutral shadow
+     underneath doing the grounding so the colour is not carrying two jobs. */
+  box-shadow:
+    0 0 26px -6px rgba(255, 64, 0, 0.55),
+    0 5px 14px -8px rgba(0, 0, 0, 0.7);
   transition: background-position 0.6s var(--ease-out-expo);
 }
 .btn-scarlet:hover {
