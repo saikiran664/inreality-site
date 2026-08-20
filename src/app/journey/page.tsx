@@ -7,7 +7,7 @@ import { BRAND, JOURNEY } from "@/lib/data";
 
 /** Under ~155 characters so it survives Google's truncation intact. */
 const DESCRIPTION =
-  "The nine outcomes a built personal brand produces — identity, authority, trust, opportunities, partnerships, customers and long-term influence.";
+  "The nine outcomes a built personal brand produces: identity, authority, trust, opportunities, partnerships, customers and long-term influence.";
 
 export const metadata: Metadata = {
   title: "What a Personal Brand Produces",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/journey" },
   openGraph: {
-    title: "The journey — Inreality",
+    title: "The journey | Inreality",
     description: DESCRIPTION,
     url: "/journey",
     type: "website",
@@ -65,7 +65,7 @@ export default function JourneyPage() {
         <JourneySlides />
         <PageClosing
           lead="Build it once, and it keeps working long after you stop pushing."
-          body="You have already done the hard part — the work, the judgement, the years behind it. What is missing isn't more effort; it's the reach that work deserves. Build the brand and the room changes: people arrive knowing your name, conversations start further along, and the opportunities you once chased begin arriving on their own. That authority is yours. It travels with you, outlasts any campaign, and compounds every year you keep showing up as yourself."
+          body="You have already done the hard part: the work, the judgement, the years behind it. What is missing isn't more effort; it's the reach that work deserves. Build the brand and the room changes: people arrive knowing your name, conversations start further along, and the opportunities you once chased begin arriving on their own. That authority is yours. It travels with you, outlasts any campaign, and compounds every year you keep showing up as yourself."
           secondaryHref="/services"
           secondaryLabel="See the services"
         />

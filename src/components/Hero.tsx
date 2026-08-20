@@ -56,8 +56,8 @@ export function Hero() {
           className="mt-5 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:mt-9 sm:text-lg md:text-xl"
         >
           {BRAND.tagline} Inreality helps founders, creators, industry leaders
-          and public figures build meaningful digital influence — turning
-          content into credibility, and credibility into opportunity.
+          and public figures build meaningful digital influence, turning
+          content into credibility and credibility into opportunity.
         </motion.p>
 
         <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-2 sm:gap-3">

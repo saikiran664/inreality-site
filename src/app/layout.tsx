@@ -34,7 +34,7 @@ const jakarta = Plus_Jakarta_Sans({
 /** Under ~155 characters — past that Google truncates it mid-sentence in the
  *  results, which is the first impression most searchers get. */
 const DESCRIPTION =
-  "Inreality builds personal brands through strategic storytelling — helping founders, creators and public figures turn content into credibility.";
+  "Inreality builds personal brands through strategic storytelling, helping founders, creators and public figures turn content into credibility.";
 
 export const metadata: Metadata = {
   // Resolves the relative URLs below (canonical, OG image) against the real
@@ -42,10 +42,10 @@ export const metadata: Metadata = {
   // scrapers refuse to follow.
   metadataBase: new URL(BRAND.siteUrl),
   title: {
-    default: "Inreality — Personal Branding & Strategic Storytelling",
+    default: "Inreality | Personal Branding & Strategic Storytelling",
     // Child pages set only their own name; the brand is appended here so no
     // page can ship an untitled or duplicate <title>.
-    template: "%s — Inreality",
+    template: "%s | Inreality",
   },
   description: DESCRIPTION,
   applicationName: BRAND.agencyName,
@@ -73,14 +73,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: BRAND.agencyName,
-    title: "Inreality — Personal Branding & Strategic Storytelling",
+    title: "Inreality | Personal Branding & Strategic Storytelling",
     description: DESCRIPTION,
     url: "/",
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Inreality — Personal Branding & Strategic Storytelling",
+    title: "Inreality | Personal Branding & Strategic Storytelling",
     description: DESCRIPTION,
   },
   robots: {
@@ -139,7 +139,7 @@ const WEBSITE_SCHEMA = {
   "@type": "WebSite",
   "@id": `${BRAND.siteUrl}#website`,
   name: BRAND.agencyName,
-  alternateName: "Inreality — Personal Branding & Strategic Storytelling",
+  alternateName: "Inreality | Personal Branding & Strategic Storytelling",
   url: BRAND.siteUrl,
   inLanguage: "en",
   publisher: { "@id": `${BRAND.siteUrl}#organisation` },

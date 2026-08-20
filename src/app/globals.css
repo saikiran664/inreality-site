@@ -183,22 +183,43 @@ body {
 }
 
 /* ── Moving gradient field ─────────────────────────────────── */
-.gradient-field {
+/* ── Ambient field ───────────────────────────────────────────
+   ONE hue per field, never both.
+
+   The field used to carry indigo radials and a scarlet one together. Two
+   translucent radials that overlap composite to the colour between them, and
+   between #4b1fe8 and #ff4000 that is magenta — so wherever they met, the
+   page grew a lavender bloom that belongs to neither brand colour. Drifting
+   the field over 26s moved the overlap around rather than avoiding it.
+
+   Splitting the field in two keeps both hues in the brand and keeps them off
+   each other: a section carries the indigo field or the warm one, so within
+   any given area only one is ever painting. The geometry, drift and blur are
+   identical, so the two read as the same treatment in different colours. */
+.gradient-field,
+.gradient-field-warm {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(42% 46% at 18% 28%, rgba(75, 31, 232, 0.5) 0%, transparent 70%),
-    /* Vivid indigo here rather than the pale tint. This radial sits behind
-       the hero's glass shards, and #9385ff is already most of the way to
-       lavender before the glass multiplies it by saturate(160%). The vivid
-       stop keeps the same lift without the wash. */
-    radial-gradient(38% 42% at 82% 24%, rgba(75, 31, 232, 0.3) 0%, transparent 70%),
-    radial-gradient(46% 50% at 68% 82%, rgba(255, 64, 0, 0.18) 0%, transparent 72%),
-    radial-gradient(40% 44% at 26% 88%, rgba(42, 10, 148, 0.45) 0%, transparent 70%);
   background-size: 200% 200%;
   animation: drift-field 26s ease-in-out infinite;
   filter: blur(12px);
+}
+
+.gradient-field {
+  background-image:
+    radial-gradient(42% 46% at 18% 28%, rgba(75, 31, 232, 0.5) 0%, transparent 70%),
+    radial-gradient(38% 42% at 82% 24%, rgba(75, 31, 232, 0.3) 0%, transparent 70%),
+    radial-gradient(46% 50% at 68% 82%, rgba(42, 10, 148, 0.5) 0%, transparent 72%),
+    radial-gradient(40% 44% at 26% 88%, rgba(42, 10, 148, 0.45) 0%, transparent 70%);
+}
+
+.gradient-field-warm {
+  background-image:
+    radial-gradient(42% 46% at 18% 28%, rgba(255, 64, 0, 0.26) 0%, transparent 70%),
+    radial-gradient(38% 42% at 82% 24%, rgba(255, 122, 61, 0.16) 0%, transparent 70%),
+    radial-gradient(46% 50% at 68% 82%, rgba(230, 54, 0, 0.24) 0%, transparent 72%),
+    radial-gradient(40% 44% at 26% 88%, rgba(255, 64, 0, 0.2) 0%, transparent 70%);
 }
 
 /* White → scarlet → white. Deliberately NO indigo stop: an indigo→warm

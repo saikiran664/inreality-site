@@ -28,7 +28,7 @@ const CARDS: Card[] = [
     eyebrow: "Our services",
     headline: "WE BUILD INFLUENCE",
     blurb:
-      "Eleven services under one roof — positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
+      "Eleven services under one roof: positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
     count: `${SERVICES.length} services`,
     banner:
       "linear-gradient(135deg, #4a1000 0%, #e63600 38%, #ff4000 68%, #ff7a3d 100%)",
@@ -39,7 +39,7 @@ const CARDS: Card[] = [
     eyebrow: "The journey",
     headline: "WHAT SUCCESS LOOKS LIKE",
     blurb:
-      "Nine success metrics a deliberately built personal brand produces — a recognisable identity, earned authority and trust, then the opportunities, partnerships and customers that follow from them.",
+      "Nine success metrics a deliberately built personal brand produces: a recognisable identity, earned authority and trust, then the opportunities, partnerships and customers that follow from them.",
     count: `${JOURNEY.length} success metrics`,
     /* Deep vivid indigo, no light tint. The previous ramp ran up through
        #7a5cff and #9385ff, which reads as periwinkle rather than as the

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { BRAND } from "@/lib/data";
 
-export const alt = "Inreality — Personal Branding & Strategic Storytelling";
+export const alt = "Inreality | Personal Branding & Strategic Storytelling";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

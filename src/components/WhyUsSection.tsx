@@ -13,7 +13,7 @@ export function WhyUsSection() {
       id="why"
       className="relative overflow-hidden bg-void px-5 py-24 sm:px-6 sm:py-32 md:px-12 md:py-44 lg:px-16"
     >
-      <div className="gradient-field" />
+      <div className="gradient-field-warm" />
       <Grain />
 
       <div
@@ -53,7 +53,7 @@ export function WhyUsSection() {
               transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
               className="mt-6 max-w-md font-body text-base font-medium leading-relaxed text-paper/65 sm:mt-8 sm:text-lg"
             >
-              Then we build toward it. We become long-term strategic partners —
+              Then we build toward it. We become long-term strategic partners,
               not just content creators filling a feed.
             </motion.p>
           </div>

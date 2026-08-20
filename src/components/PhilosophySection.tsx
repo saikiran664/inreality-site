@@ -11,7 +11,7 @@ export function PhilosophySection() {
       id="philosophy"
       className="relative overflow-hidden bg-midnight px-5 py-24 sm:px-6 sm:py-32 md:px-12 md:py-44 lg:px-16"
     >
-      <div className="gradient-field" />
+      <div className="gradient-field-warm" />
       <Grain />
 
       <div
@@ -50,8 +50,8 @@ export function PhilosophySection() {
           transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
           className="mx-auto mt-7 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:mt-9 sm:text-lg md:text-xl"
         >
-          We begin with conversations — understanding your goals, your audience
-          and the outcome you actually want — before a single piece of content
+          We begin with conversations that uncover your goals, your audience
+          and the outcome you actually want, before a single piece of content
           gets made. Strategy first means the work has somewhere to go.
         </motion.p>
       </div>

@@ -19,7 +19,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export function ServicesTrack() {
   return (
     <main className="relative overflow-hidden bg-void">
-      <div className="gradient-field" />
+      <div className="gradient-field-warm" />
       <Grain />
 
       <div className="relative mx-auto w-full max-w-4xl px-5 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-24 md:px-12 md:pt-36">
@@ -32,7 +32,7 @@ export function ServicesTrack() {
             <span className="gradient-text">INFLUENCE</span>
           </h1>
           <p className="mt-6 max-w-2xl font-body text-base font-medium leading-relaxed text-paper/70 sm:text-lg">
-            Eleven services, one plan — everything needed to build a personal
+            Eleven services, one plan. Everything needed to build a personal
             brand that compounds. Positioning and story first, then the content,
             production and reporting that carry it.
           </p>
@@ -78,6 +78,7 @@ export function ServicesTrack() {
         body="The eleven services are combined into a single plan shaped around your goals, your audience and the way you actually work, so the pieces reinforce each other instead of pulling in different directions. The end result is a personal brand that is unmistakably yours, built to a standard you would be happy to be judged on."
         secondaryHref="/journey"
         secondaryLabel="See what success looks like"
+        tone="warm"
       />
     </main>
   );

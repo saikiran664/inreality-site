@@ -36,7 +36,7 @@ export const SERVICES: CurveItem[] = [
   {
     title: "Brand Positioning",
     description:
-      "Defining who you are beyond your company — the story, the point of view, and the space you own in people's minds.",
+      "Defining who you are beyond your company: the story, the point of view, and the space you own in people's minds.",
     icon: Compass,
   },
   {
@@ -60,7 +60,7 @@ export const SERVICES: CurveItem[] = [
   {
     title: "Cinematic Production",
     description:
-      "Studio and on-location shoots, produced with a premium editorial look — because how it's made says as much as what's said.",
+      "Studio and on-location shoots, produced with a premium editorial look, because how it's made says as much as what's said.",
     icon: Clapperboard,
   },
   {
@@ -72,7 +72,7 @@ export const SERVICES: CurveItem[] = [
   {
     title: "Campaign Ideation",
     description:
-      "Concepts built around real moments — launches, milestones, turning points — never generic content filler.",
+      "Concepts built around real moments like launches, milestones and turning points. Never generic content filler.",
     icon: Lightbulb,
   },
   {
@@ -96,7 +96,7 @@ export const SERVICES: CurveItem[] = [
   {
     title: "Growth Strategy & Performance",
     description:
-      "Ongoing analytics and optimisation — doubling down on what compounds, cutting what doesn't move the needle.",
+      "Ongoing analytics and optimisation. We double down on what compounds and cut what doesn't move the needle.",
     icon: TrendingUp,
   },
 ];
@@ -109,7 +109,7 @@ export const JOURNEY: CurveItem[] = [
   {
     title: "Strong Identity",
     description:
-      "A distinct, recognisable presence — the person people picture when they think of what you do.",
+      "A distinct, recognisable presence. You become the person people picture when they think of what you do.",
     icon: Fingerprint,
   },
   {
@@ -121,7 +121,7 @@ export const JOURNEY: CurveItem[] = [
   {
     title: "Trust",
     description:
-      "Customers, partners and teams trust a person they feel they know — and that trust transfers to the company.",
+      "Customers, partners and teams trust a person they feel they know, and that trust transfers to the company.",
     icon: HeartHandshake,
   },
   {
@@ -145,7 +145,7 @@ export const JOURNEY: CurveItem[] = [
   {
     title: "Customer Acquisition",
     description:
-      "New customers who arrive already trusting you — lower-cost, higher-intent growth.",
+      "New customers who arrive already trusting you. Lower cost, higher intent growth.",
     icon: Users,
   },
   {
@@ -157,7 +157,7 @@ export const JOURNEY: CurveItem[] = [
   {
     title: "Long-Term Influence",
     description:
-      "A compounding personal brand that keeps paying off — for this business, and whatever you build next.",
+      "A compounding personal brand that keeps paying off, for this business and whatever you build next.",
     icon: InfinityIcon,
   },
 ];
@@ -172,7 +172,7 @@ export const EDGE = [
   {
     title: "Cinematic Storytelling",
     description:
-      "Production quality that makes people stop — the craft of film applied to a personal brand.",
+      "Production quality that makes people stop. The craft of film, applied to a personal brand.",
   },
   {
     title: "Campaign Thinking",
@@ -182,7 +182,7 @@ export const EDGE = [
   {
     title: "Authenticity",
     description:
-      "Your voice, sharpened — never replaced. The story only works if it's genuinely yours.",
+      "Your voice, sharpened and never replaced. The story only works if it's genuinely yours.",
   },
 ];
 
@@ -216,26 +216,26 @@ export const FAQS: FAQ[] = [
   {
     question: "What does Inreality actually do?",
     answer:
-      "We build personal brands through strategic storytelling. That spans positioning and story development, content planning and ghostwriting, and cinematic production — podcasts, studio and on-location shoots — with monthly roadmaps and reporting so progress stays visible.",
+      "We build personal brands through strategic storytelling. That spans positioning and story development, content planning and ghostwriting, and cinematic production covering podcasts, studio and on-location shoots, with monthly roadmaps and reporting so progress stays visible.",
   },
   {
     question: "Who do you work with?",
     answer:
-      "Founders, creators, industry leaders and public figures — people whose personal credibility is already tied to their business, and who want that connection built deliberately rather than left to chance.",
+      "Founders, creators, industry leaders and public figures. People whose personal credibility is already tied to their business, and who want that connection built deliberately rather than left to chance.",
   },
   {
     question: "Will the content still sound like me?",
     answer:
-      "Yes. Your voice, sharpened — never replaced. We start from your own history and point of view, and the story only works if it's genuinely yours. Ghostwriting matches how you actually speak, rather than flattening it into a house style.",
+      "Yes. Your voice, sharpened and never replaced. We start from your own history and point of view, and the story only works if it's genuinely yours. Ghostwriting matches how you actually speak, rather than flattening it into a house style.",
   },
   {
     question: "Which platforms do you cover?",
     answer:
-      "All of them — Instagram, LinkedIn, X (formerly Twitter) and beyond, plus long-form formats like podcasts. How many we run is set by your package tier, so the mix is matched to where your audience actually is rather than spread thin across every channel. Whatever the mix, it stays one consistent narrative instead of scattered posts.",
+      "All of them: Instagram, LinkedIn, X (formerly Twitter) and beyond, plus long-form formats like podcasts. How many we run is set by your package tier, so the mix is matched to where your audience actually is rather than spread thin across every channel. Whatever the mix, it stays one consistent narrative instead of scattered posts.",
   },
   {
     question: "How does a project start?",
     answer:
-      "With conversations, not a content calendar. We work out your goals, your audience and the outcome you actually want before a single piece of content gets made — strategy first, so the work has somewhere to go.",
+      "With conversations, not a content calendar. We work out your goals, your audience and the outcome you actually want before a single piece of content gets made. Strategy first, so the work has somewhere to go.",
   },
 ];

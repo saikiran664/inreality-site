@@ -31,7 +31,7 @@ export default function ThankYou() {
           </p>
 
           <h1 className="mt-4 font-display text-[13vw] leading-display tracking-tight text-paper sm:text-5xl md:text-6xl lg:text-7xl">
-            THANK YOU — <span className="gradient-text">WE&rsquo;LL BE IN TOUCH</span>
+            THANK YOU. <span className="gradient-text">WE&rsquo;LL BE IN TOUCH</span>
           </h1>
 
           {/* TODO: state the real response-time promise here, e.g. "within one

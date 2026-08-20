@@ -329,7 +329,7 @@ export function JourneySlides() {
                   key={item.title}
                   type="button"
                   onClick={() => jumpTo(i)}
-                  aria-label={`${item.title} — outcome ${i + 1} of ${items.length}`}
+                  aria-label={`${item.title}, outcome ${i + 1} of ${items.length}`}
                   aria-current={i === activeIndex}
                   className={`h-1.5 rounded-full outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-scarlet ${
                     i === activeIndex

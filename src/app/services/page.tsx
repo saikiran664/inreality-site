@@ -10,11 +10,11 @@ import { BRAND, SERVICES } from "@/lib/data";
  * earlier 273-character version lost everything after "content planning".
  */
 const DESCRIPTION =
-  "The eleven personal branding services Inreality offers — positioning, story development, content planning, ghostwriting, production and growth strategy.";
+  "The eleven personal branding services Inreality offers: positioning, story development, content planning, ghostwriting, production and growth strategy.";
 
 export const metadata: Metadata = {
   // Titles run ~60 characters before truncation, and the layout appends
-  // " — Inreality" to whatever is set here.
+  // " | Inreality" to whatever is set here.
   title: "Personal Branding Services",
   description: DESCRIPTION,
   keywords: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/services" },
   openGraph: {
-    title: "Services — Inreality",
+    title: "Services | Inreality",
     description: DESCRIPTION,
     url: "/services",
     type: "website",
