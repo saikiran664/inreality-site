@@ -13,7 +13,7 @@ export function WhyUsSection() {
       id="why"
       className="relative overflow-hidden bg-void px-5 py-24 sm:px-6 sm:py-32 md:px-12 md:py-44 lg:px-16"
     >
-      <div className="gradient-field-warm" />
+      <div className="gradient-field" />
       <Grain />
 
       <div

@@ -17,15 +17,11 @@ export function PageClosing({
   body,
   secondaryHref,
   secondaryLabel,
-  tone = "indigo",
 }: {
   lead: string;
   body: string;
   secondaryHref: string;
   secondaryLabel: string;
-  /** Which ambient field to carry. Should match the page it closes, so the
-   *  hue does not switch halfway down. */
-  tone?: "indigo" | "warm";
 }) {
   return (
     <section className="relative overflow-hidden border-t border-white/10 bg-void">
@@ -40,7 +36,7 @@ export function PageClosing({
         list, so its radials are too diffuse to register by the time they get
         this far down. A field scoped to this section fixes both.
       */}
-      <div className={tone === "warm" ? "gradient-field-warm" : "gradient-field"} />
+      <div className="gradient-field" />
       <Grain />
 
       <div className="relative mx-auto w-full max-w-3xl px-5 py-20 text-center sm:px-6 sm:py-24 md:px-12">

@@ -19,7 +19,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export function ServicesTrack() {
   return (
     <main className="relative overflow-hidden bg-void">
-      <div className="gradient-field-warm" />
+      <div className="gradient-field" />
       <Grain />
 
       <div className="relative mx-auto w-full max-w-4xl px-5 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-24 md:px-12 md:pt-36">
@@ -78,7 +78,6 @@ export function ServicesTrack() {
         body="The eleven services are combined into a single plan shaped around your goals, your audience and the way you actually work, so the pieces reinforce each other instead of pulling in different directions. The end result is a personal brand that is unmistakably yours, built to a standard you would be happy to be judged on."
         secondaryHref="/journey"
         secondaryLabel="See what success looks like"
-        tone="warm"
       />
     </main>
   );
