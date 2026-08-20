@@ -207,6 +207,28 @@ body {
   background-size: 200% 200%;
   animation: drift-field 26s ease-in-out infinite;
   filter: blur(12px);
+  /*
+    Fade the field out at its own top and bottom.
+
+    The radials do not finish inside the box. The lower one is centred at 88%
+    height with a 44% radius and only reaches `transparent` at 70% of that, so
+    at the section's bottom edge it is still around a quarter of the way into
+    its falloff and gets sliced flat by `overflow: hidden`. The result is a
+    hard horizontal line wherever one section ends and the next begins.
+
+    Nudging the radials would not hold: `drift-field` animates the background
+    position over 26s, so whatever is near an edge changes constantly. Masking
+    the element guarantees the falloff regardless of where the drift has moved
+    things. Only the standard property is declared, since Lightning CSS adds
+    the prefixed form and dedupes a hand-written pair down to the prefix alone.
+  */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 9%,
+    #000 91%,
+    transparent 100%
+  );
 }
 
 /* White → scarlet → white. Deliberately NO indigo stop: an indigo→warm
