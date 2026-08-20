@@ -28,7 +28,7 @@ const CARDS: Card[] = [
     eyebrow: "Our services",
     headline: "WE BUILD INFLUENCE",
     blurb:
-      "Eleven services under one roof - positioning and story development, content planning and ghostwriting, cinematic production and podcasts, then the roadmaps and analytics that keep it compounding.",
+      "Eleven services under one roof - positioning, story development, content planning, ghostwriting, cinematic production, podcasts, plus the roadmaps and analytics that keep it compounding.",
     count: `${SERVICES.length} services`,
     banner:
       "linear-gradient(135deg, #4a1000 0%, #e63600 38%, #ff4000 68%, #ff7a3d 100%)",
