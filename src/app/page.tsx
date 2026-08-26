@@ -6,6 +6,7 @@ import { HomeSectionCards } from "@/components/HomeSectionCards";
 import { IntroSplash } from "@/components/IntroSplash";
 import { PhilosophySection } from "@/components/PhilosophySection";
 import { SiteHeader } from "@/components/SiteHeader";
+import { StatsBand } from "@/components/StatsBand";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { WhyUsSection } from "@/components/WhyUsSection";
 
@@ -27,6 +28,10 @@ export default function Home() {
             the home page can be read at the reader's pace. */}
         <HomeSectionCards />
         <WhyUsSection />
+        {/* Evidence sits after the pitch and before the objections: it is what
+            turns "here is what we believe" into "here is why it holds", and it
+            answers the doubt the FAQ would otherwise have to. */}
+        <StatsBand />
         {/* Objections get answered last, immediately before the ask. */}
         <FAQSection />
         <CTASection />
