@@ -79,11 +79,14 @@ export function ComingSoon() {
           prefers-reduced-motion block in globals.css. */}
       <div aria-hidden="true" className="gradient-field" />
 
-      <div className="relative flex min-h-screen flex-col justify-between px-6 py-10 sm:px-10 sm:py-14 lg:px-20 lg:py-16">
-        {/* `self-start` is load-bearing: as a flex item in a column container
-            the image inherits `align-self: stretch`, which sizes it to the
-            container's full width and ignores `w-auto`. Without it the wordmark
-            renders 818px wide at 26px tall, a 31:1 stretch of 8.54:1 artwork.
+      <div className="relative flex min-h-screen flex-col items-center justify-between px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-20 lg:py-16">
+        {/* The explicit `self-center` is load-bearing, and not just a duplicate
+            of the container's `items-center`. A flex item in a column container
+            defaults to `align-self: stretch`, which sizes the image to the
+            container's full width and ignores `w-auto` — the wordmark rendered
+            818px wide at 26px tall, a 31:1 stretch of 8.54:1 artwork. Any
+            non-stretch value fixes it, so stating it on the element keeps the
+            aspect ratio safe if the container's alignment ever changes again.
             Height in rem, not px, so it scales with the reader's text size. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -91,7 +94,7 @@ export function ComingSoon() {
           alt={BRAND.agencyName}
           width={2512}
           height={294}
-          className="h-[1.4rem] w-auto self-start sm:h-[1.65rem]"
+          className="h-[1.4rem] w-auto self-center sm:h-[1.65rem]"
         />
 
         <div className="max-w-xl py-14 lg:py-0">
@@ -101,13 +104,13 @@ export function ComingSoon() {
             SOON.
           </h1>
 
-          <div className="mt-7 h-1.5 w-20 rounded-full bg-scarlet sm:w-28" />
+          <div className="mx-auto mt-7 h-1.5 w-20 rounded-full bg-scarlet sm:w-28" />
 
-          <p className="mt-7 max-w-md font-body text-base leading-relaxed font-medium text-accent-pale sm:text-lg">
+          <p className="mx-auto mt-7 max-w-md font-body text-base leading-relaxed font-medium text-accent-pale sm:text-lg">
             Personal branding, built on story first.
           </p>
 
-          <form onSubmit={onSubmit} className="mt-9 max-w-md">
+          <form onSubmit={onSubmit} className="mx-auto mt-9 max-w-md">
             <label
               htmlFor="notify-email"
               className="block font-body text-[11px] font-extrabold tracking-[0.2em] text-paper uppercase"
@@ -158,7 +161,7 @@ export function ComingSoon() {
 
         <a
           href={`mailto:${BRAND.contactEmail}`}
-          className="self-start rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
+          className="self-center rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
         >
           {BRAND.contactEmail}
         </a>
