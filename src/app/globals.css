@@ -231,6 +231,20 @@ body {
   );
 }
 
+/* The same field with the scarlet pool removed — indigo only.
+   A modifier rather than an edit to `.gradient-field` itself, because the hero
+   still wants the scarlet stop and shares that class. Applied alongside it, so
+   it inherits the drift, blur and edge mask and overrides only the layers.
+   `background-size` has to be restated: the `background` shorthand resets it,
+   and without it the 200% canvas the drift animation pans across collapses. */
+.gradient-field--indigo {
+  background:
+    radial-gradient(42% 46% at 18% 28%, rgba(75, 31, 232, 0.5) 0%, transparent 70%),
+    radial-gradient(38% 42% at 82% 24%, rgba(75, 31, 232, 0.3) 0%, transparent 70%),
+    radial-gradient(40% 44% at 26% 88%, rgba(42, 10, 148, 0.45) 0%, transparent 70%);
+  background-size: 200% 200%;
+}
+
 /* White → scarlet → white. Deliberately NO indigo stop: an indigo→warm
    headline sweep is the Meta gradient. Going through white instead
    keeps the scarlet hot without ever blending the two brand hues.

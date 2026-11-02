@@ -91,19 +91,32 @@ export function ComingSoon() {
     // any colour: the page is back on the site's own ground, so <body> already
     // carries the right background and nothing needs overriding.
     <main data-page="coming-soon" className="relative min-h-screen overflow-hidden bg-void">
-      {/* The same drifting field as the hero — vivid indigo at the top left,
-          deep indigo bottom left, a single scarlet pool at the lower right.
-          This is what makes the page read as indigo; the ground underneath is
-          very nearly black. Its animation is covered by the global
+      {/* The hero's drifting field, indigo only — vivid indigo at the top left,
+          deep indigo at the bottom left. The `--indigo` modifier drops the
+          scarlet pool that sat at the lower right; the hero keeps it, which is
+          why this is a modifier and not an edit to the shared class. The ground
+          underneath is very nearly black, so this field is what makes the page
+          read as indigo. Its animation is covered by the global
           prefers-reduced-motion block in globals.css. */}
-      <div aria-hidden="true" className="gradient-field" />
+      <div aria-hidden="true" className="gradient-field gradient-field--indigo" />
 
-      {/* Two rows: the lockup takes the free space and centres inside it, the
-          mail link sits on the baseline. A grid rather than `justify-between`
-          with an empty spacer, now that the wordmark has moved out of the top
-          slot and into the lockup. */}
-      <div className="relative grid min-h-screen grid-rows-[1fr_auto] gap-10 px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-20 lg:py-16">
-        <div className="flex flex-col items-center justify-center">
+      {/* The lockup centres on the VIEWPORT, not on whatever is left above the
+          mail link. Previously a two-row grid gave the link its own row plus a
+          gap, so the lockup centred inside a box shorter than the screen and
+          sat visibly high. Taking the link out of flow puts the lockup's centre
+          on the real centre.
+
+          The media query is the guard that makes that safe: on a short window a
+          centred lockup reaches far enough down to touch an absolutely-
+          positioned link — measured at 1440x500 it overlapped by 9px. The extra
+          bottom padding shrinks the box it centres in, lifting it clear.
+
+          It has to be written as a raw `@media(max-height:...)`. Tailwind's
+          `max-[620px]:` shorthand is a max-WIDTH variant, so the first attempt
+          at this guard never fired on a wide-but-short window, which is exactly
+          the case it existed for. */}
+      <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-10 text-center [@media(max-height:620px)]:pb-24 sm:px-10 sm:py-14 lg:px-20 lg:py-16">
+        <div className="flex flex-col items-center">
           {/* The wordmark IS the heading. It used to be a bare <img> pinned to
               the top with "LAUNCHING SOON." as the h1, which inverted the
               hierarchy the moment the logo became the dominant element — and
@@ -188,7 +201,7 @@ export function ComingSoon() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
+                placeholder="yourmail@email.com"
                 className="glass min-h-11 min-w-0 flex-1 rounded-full px-5 py-3 font-body text-base font-medium text-paper transition-colors placeholder:text-accent focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
               />
               <button
@@ -224,7 +237,7 @@ export function ComingSoon() {
 
         <a
           href={`mailto:${BRAND.contactEmail}`}
-          className="justify-self-center rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none sm:bottom-14 lg:bottom-16"
         >
           {BRAND.contactEmail}
         </a>
