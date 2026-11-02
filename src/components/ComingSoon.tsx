@@ -18,14 +18,33 @@ const NOTIFY_ENDPOINT = process.env.NEXT_PUBLIC_NOTIFY_ENDPOINT ?? "";
 type Status = "idle" | "sending" | "done" | "error";
 
 /**
+ * Tracking on the LAUNCHING SOON line, and the indent that re-centres it.
+ *
+ * Letter-spacing is added after *every* character including the last, so a
+ * centred line carries one full space of trailing air inside its line box. The
+ * glyphs therefore sit half a space left of true centre — at this much tracking
+ * that is a visible misalignment against the wordmark above it.
+ *
+ * The correction is the FULL tracking value, not half of it, which is the
+ * counter-intuitive part. `text-indent` widens the line box, and a centred line
+ * re-centres that wider box, so the glyphs only move by half of whatever indent
+ * is applied. Measured at 18px with 6.84px of tracking: indent 0 put the glyph
+ * midpoint 3.41px left of the axis (exactly half the tracking, as predicted),
+ * indent 3.42px left it 1.71px out, and indent 6.84px landed it on 0.00px.
+ *
+ * Both values are in `em` so they scale with the font size instead of drifting
+ * apart between breakpoints.
+ */
+const TRACKING = "0.38em";
+const TRACKING_RECENTRE = TRACKING;
+
+/**
  * The holding page, in the site's own language.
  *
  * Nothing here is a local palette. The ground is `bg-void`, the drifting
  * indigo-and-scarlet `.gradient-field` is the same element the hero uses, the
- * display face is Anton on `leading-display`, the surface is `glass` and the
- * action is `btn-scarlet` — all straight out of globals.css. An earlier pass
- * built this page on hand-written hexes and it drifted away from the live site
- * by exactly as much as those values differed from the tokens.
+ * display face is Anton, the surface is `glass` and the action is
+ * `btn-scarlet` — all straight out of globals.css.
  *
  * Two of those tokens carry contrast rules worth restating, because both are
  * easy to get backwards:
@@ -79,47 +98,76 @@ export function ComingSoon() {
           prefers-reduced-motion block in globals.css. */}
       <div aria-hidden="true" className="gradient-field" />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-between px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-20 lg:py-16">
-        {/* The explicit `self-center` is load-bearing, and not just a duplicate
-            of the container's `items-center`. A flex item in a column container
-            defaults to `align-self: stretch`, which sizes the image to the
-            container's full width and ignores `w-auto` — the wordmark rendered
-            818px wide at 26px tall, a 31:1 stretch of 8.54:1 artwork. Any
-            non-stretch value fixes it, so stating it on the element keeps the
-            aspect ratio safe if the container's alignment ever changes again.
-            Height in rem, not px, so it scales with the reader's text size. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo.png"
-          alt={BRAND.agencyName}
-          width={2512}
-          height={294}
-          className="h-[1.4rem] w-auto self-center sm:h-[1.65rem]"
-        />
+      {/* Two rows: the lockup takes the free space and centres inside it, the
+          mail link sits on the baseline. A grid rather than `justify-between`
+          with an empty spacer, now that the wordmark has moved out of the top
+          slot and into the lockup. */}
+      <div className="relative grid min-h-screen grid-rows-[1fr_auto] gap-10 px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-20 lg:py-16">
+        <div className="flex flex-col items-center justify-center">
+          {/* The wordmark IS the heading. It used to be a bare <img> pinned to
+              the top with "LAUNCHING SOON." as the h1, which inverted the
+              hierarchy the moment the logo became the dominant element — and
+              left the page's h1 reading "Launching soon" rather than the brand
+              name the domain is trying to rank for. The alt text supplies the
+              heading text, so the h1 now reads "Inreality".
 
-        <div className="max-w-xl py-14 lg:py-0">
-          <h1 className="font-display text-[14vw] leading-display tracking-[-0.02em] text-paper sm:text-7xl lg:text-[5.5rem]">
-            LAUNCHING
-            <br />
-            SOON.
+              Sized by width with a rem cap: the artwork is 8.54:1, so width is
+              the dimension that matters, and `h-auto` against the intrinsic
+              width/height attributes keeps the aspect ratio exact. That also
+              replaces the old `self-center` guard — the image is no longer a
+              flex item, so `align-self: stretch` can no longer distort it. */}
+          <h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt={BRAND.agencyName}
+              width={2512}
+              height={294}
+              className="h-auto w-[min(86vw,36rem)]"
+            />
           </h1>
 
-          <div className="mx-auto mt-7 h-1.5 w-20 rounded-full bg-scarlet sm:w-28" />
+          {/* Directly beneath the wordmark, small and tracked wide. Anton keeps
+              the display voice while the size drops; it ships only weight 400,
+              which clears the 400-or-heavier floor for text under 18px with no
+              risk of the browser synthesising a weight the family lacks. */}
+          <p
+            className="mt-6 font-display text-base leading-[1.2] text-paper uppercase sm:mt-7 sm:text-lg"
+            style={{ letterSpacing: TRACKING, textIndent: TRACKING_RECENTRE }}
+          >
+            Launching soon
+          </p>
 
-          <p className="mx-auto mt-7 max-w-md font-body text-base leading-relaxed font-medium text-accent-pale sm:text-lg">
+          <div className="mt-8 h-1.5 w-20 rounded-full bg-scarlet sm:w-28" />
+
+          {/* `text-balance` evens the two lines rather than leaving a short
+              widow. It is a one-sentence description, not a paragraph, which is
+              where balance belongs; `pretty` is the paragraph tool.
+              Leading sits at 1.55 — inside the 1.5–1.6 band for body copy,
+              where Tailwind's `leading-relaxed` (1.625) is just outside it. */}
+          <p className="mt-7 max-w-md text-balance font-body text-base leading-[1.55] font-medium text-accent-pale sm:text-lg">
             Personal branding, built on story first.
           </p>
 
-          <form onSubmit={onSubmit} className="mx-auto mt-9 max-w-md">
+          <form onSubmit={onSubmit} className="mt-9 w-full max-w-md">
+            {/* 12px, not the 11px this was: below about 12px UI text stops
+                being comfortably readable, and the size is in rem so the
+                reader's own browser font size still scales it. */}
             <label
               htmlFor="notify-email"
-              className="block font-body text-[11px] font-extrabold tracking-[0.2em] text-paper uppercase"
+              className="block font-body text-xs font-extrabold tracking-[0.2em] text-paper uppercase"
             >
               Get told when we go live
             </label>
 
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              {/* A visible focus ring, not `outline-none` — removing it is the
+              {/* 16px at every width, not `text-sm sm:text-base`. iOS Safari
+                  zooms the whole page when an input's text is under 16px, and
+                  the old pair had 14px on exactly the viewports where that
+                  happens and 16px on the ones where it cannot. Desktop renders
+                  identically to before; only mobile changes, by 2px.
+
+                  A visible focus ring, not `outline-none` — removing it is the
                   one accessibility anti-pattern that would lock keyboard users
                   out of the only interactive thing on the page. */}
               <input
@@ -129,7 +177,7 @@ export function ComingSoon() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                className="glass min-h-11 min-w-0 flex-1 rounded-full px-5 py-3 font-body text-sm font-medium text-paper transition-colors placeholder:text-accent focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none sm:text-base"
+                className="glass min-h-11 min-w-0 flex-1 rounded-full px-5 py-3 font-body text-base font-medium text-paper transition-colors placeholder:text-accent focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
               />
               <button
                 type="submit"
@@ -148,9 +196,12 @@ export function ComingSoon() {
               </button>
             </div>
 
+            {/* Leading raised to 1.5: the error message wraps to two lines, and
+                Tailwind's `text-xs` ships a 1.333 line-height, which is below
+                the floor for anything that wraps. */}
             <p
               aria-live="polite"
-              className="mt-3 min-h-5 font-body text-xs font-medium text-paper sm:text-sm"
+              className="mt-3 min-h-5 font-body text-xs leading-[1.5] font-medium text-paper sm:text-sm"
             >
               {status === "done" && "Thank you. We will be in touch at launch."}
               {status === "error" &&
@@ -161,7 +212,7 @@ export function ComingSoon() {
 
         <a
           href={`mailto:${BRAND.contactEmail}`}
-          className="self-center rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
+          className="justify-self-center rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none"
         >
           {BRAND.contactEmail}
         </a>
