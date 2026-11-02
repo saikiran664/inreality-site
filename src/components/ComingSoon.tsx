@@ -24,9 +24,8 @@ type Status = "idle" | "sending" | "done" | "error";
  * over. Measured against white: the 60% label came out at 3.36:1 and the 35%
  * placeholder at 1.93:1, both short of the 4.5:1 floor for body text. And what
  * alpha-reduced #4b1fe8 composites to on white is #9379f1 and #c0b1f7 — the
- * lavender this brand specifically does not use. Solid steps fix the contrast
- * and the palette in one move, and hierarchy comes from the two real brand
- * indigos plus weight and size, which is where it should come from anyway.
+ * lavender this brand does not use. Solid steps fix the contrast and the
+ * palette in one move.
  */
 const INK = {
   /** 13.4:1 — the primary. The wordmark, the display type, the submit button
@@ -40,107 +39,134 @@ const INK = {
 } as const;
 
 /**
- * Paper surface, built from two noise frequencies.
+ * Scarlet speckle, as a thresholded noise mask over solid colour.
  *
- * A flat white field reads as unfinished at this size — there is very little on
- * the page to carry it. Noise gives the paper a surface without introducing a
- * colour, but only once it is desaturated: feTurbulence generates each channel
- * independently, so on its own it is *chromatic* noise and lays faint coloured
- * speckle over the page. The feColorMatrix flattens it to value-only, which is
- * what makes it darken the white evenly instead of tinting it. That matters more
- * here than it normally would, because
- * every *tinted* way of adding depth to this page drifts toward either lavender
- * (indigo at low alpha) or salmon (scarlet at low alpha), and both are out.
+ * This is the one detail that makes scarlet texture possible on a white page.
+ * Painting scarlet at partial opacity blends it toward white, and #ff4000
+ * blended toward white is pink — the failure behind every earlier attempt here,
+ * the faded arcs and the streaks before them.
  *
- * Two frequencies rather than one. Fine noise alone reads as video grain
- * sitting on top of the page; adding a low-frequency mottle underneath it gives
- * the uneven absorption of real stock, so the two together read as paper rather
- * than as a filter. The coarse layer is kept weak — it is doing the work of a
- * material, and material is not supposed to be the thing you notice.
+ * So the colour never has its opacity touched. A solid #ff4000 layer is *masked*
+ * by noise whose alpha has been pushed through a discrete transfer function,
+ * which thresholds it to either fully opaque or fully clear with nothing in
+ * between. The result is a field where every surviving pixel is undiluted
+ * scarlet and the lightness comes from how much paper shows between them —
+ * texture by coverage, not by tint. Measured: 0% of mask pixels land on a
+ * partial alpha at any threshold, so nothing can blend halfway to pink.
+ *
+ * The 20-entry tables are what set coverage, and they are not guessable.
+ * `tableValues` splits the input range into equal bands, so the obvious
+ * `'0 0 0 1'` reads as "keep the top quarter" — but fractalNoise concentrates
+ * its alpha tightly around 0.5, and a threshold at 0.75 keeps just **1.6%** of
+ * pixels, which is invisible. Twenty entries put the threshold on a 0.05 grid,
+ * and these two were measured: 0.60 keeps 20.6%, 0.55 keeps 32.7%.
+ */
+const SPECKLE_FINE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.52' numOctaves='3' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23s)'/%3E%3C/svg%3E\")";
+
+/** A coarser grade of the same thing, for the denser inner drift. 32.7%. */
+const SPECKLE_COARSE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.16' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23c)'/%3E%3C/svg%3E\")";
+
+/**
+ * Paper grain. Desaturated, because feTurbulence generates each channel
+ * independently and is therefore *chromatic* noise on its own — it lays faint
+ * coloured speckle over the page unless the feColorMatrix flattens it to
+ * value-only.
  */
 const GRAIN_FINE =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
-/** Low-frequency mottle: the tooth of the stock, not the grain of the film. */
-const GRAIN_COARSE =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='340' height='340' filter='url(%23m)'/%3E%3C/svg%3E\")";
-
 /**
- * A scarlet halftone fanning out from the bottom-right corner.
+ * One patch of scarlet texture.
  *
- * This is the one way to get scarlet depth onto white without it turning
- * salmon, and it is worth being precise about why. Fading a scarlet shape by
- * *opacity* blends it toward white, and #ff4000 blended toward white is pink —
- * which is what sank the earlier faded arcs and the streaks before them. A
- * halftone fades by *size* instead: every dot stays fully saturated #ff4000,
- * and the field lightens because the dots get smaller and leave more paper
- * between them. Squint and it reads as a gradient; look closely and there is
- * no pink anywhere on the page.
- *
- * Dot radius falls off with distance from the corner and hits zero around 60%
- * of the way across, so the field thins out well before it reaches the type.
+ * Two nested masks rather than `mask-composite`, which keeps this working the
+ * same way everywhere: the outer element masks the *region* with a soft radial,
+ * the inner element masks the *grain* with thresholded noise. Nesting
+ * multiplies them, so the patch fades out at its edge while every pixel in its
+ * body stays undiluted scarlet.
  */
-const HALFTONE_DOTS = (() => {
-  const dots: { x: number; y: number; r: number }[] = [];
-  const STEP = 40;
-  const DIAG = Math.hypot(1000, 1000);
-  for (let gx = 0; gx <= 1000; gx += STEP) {
-    for (let gy = 0; gy <= 1000; gy += STEP) {
-      const d = Math.hypot(1000 - gx, 1000 - gy) / DIAG;
-      const r = (1 - d * 1.65) * 9.5;
-      if (r > 0.45) dots.push({ x: gx, y: gy, r: +r.toFixed(2) });
-    }
-  }
-  return dots;
-})();
+function SpecklePatch({
+  className,
+  shape,
+  texture,
+  size,
+}: {
+  className: string;
+  shape: string;
+  texture: string;
+  size: string;
+}) {
+  return (
+    <div
+      className={className}
+      style={{ maskImage: shape, WebkitMaskImage: shape, maskRepeat: "no-repeat" }}
+    >
+      <div
+        className="h-full w-full bg-[#ff4000]"
+        style={{
+          maskImage: texture,
+          WebkitMaskImage: texture,
+          maskSize: size,
+          WebkitMaskSize: size,
+          maskRepeat: "repeat",
+        }}
+      />
+    </div>
+  );
+}
 
 /**
- * The backdrop.
+ * The backdrop: a white gradient ground with scarlet texture over it.
  *
- * Built in layers, bottom to top: a ruled dot grid that gives the white a
- * measurable surface, the scarlet halftone and corner shapes, then paper noise
- * and a vignette over the top of everything.
+ * The ground does the depth. Three neutral gradients — a diagonal fall from
+ * white to a cool off-white, a lit highlight in the top-left and a settling
+ * shadow in the bottom-right — give the page a light source and a direction
+ * before anything else is drawn on it. They are kept achromatic on purpose:
+ * tinting a gradient on this page sends it to lavender (indigo at low alpha) or
+ * salmon (scarlet at low alpha), so all of the colour arrives as texture at
+ * full strength instead.
  *
- * The grid and rules are *neutral*, not brand-tinted, and that is deliberate
- * rather than timid. Indigo at the alpha a hairline needs composites to
- * lavender on white, which is the one hue this brand has ruled out; neutral
- * grey at the same alpha reads as drafting stock and carries no hue at all. So
- * the structural layers stay achromatic and every bit of colour on the page
- * comes from scarlet at full strength.
+ * Over that sit the scarlet layers — two speckle drifts out of the bottom-right
+ * corner, the solid disc that caps their dense end, two rings, and one small
+ * mark diagonally opposite to balance the mass.
  */
 function Backdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Dot grid: the base surface. Fine enough to read as tooth rather than
-          as polka dots, dense enough that the page is no longer blank. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(10,10,14,0.17) 1.1px, transparent 1.4px)",
-          backgroundSize: "26px 26px",
-        }}
-      />
+      {/* The white gradient ground. */}
+      <div className="absolute inset-0 bg-[linear-gradient(145deg,#ffffff_0%,#fcfbfe_38%,#f4f2f8_70%,#eae7f1_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_14%_8%,#ffffff_0%,rgba(255,255,255,0)_62%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_92%_96%,rgba(10,10,14,0.09)_0%,rgba(10,10,14,0)_68%)]" />
 
-      {/* Horizontal rules over the grid, on a coarser pitch: a baseline grid,
-          the way a page of editorial stock is ruled. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(to bottom, rgba(10,10,14,0.07) 0 1px, transparent 1px 104px)",
-        }}
+      {/* Scarlet texture. The coarse drift reaches further up the page, the
+          fine one concentrates near the corner, so the two read as one field
+          thinning out rather than as two separate patches. */}
+      {/* `farthest-side`, not `closest-side`. With the centre sitting on the
+          element's own corner the closest side is at distance zero, so the
+          gradient collapses to a radius of 0 and masks the entire patch away —
+          which is exactly what it did. */}
+      {/* Sized to stay off the type. Scarlet sitting directly behind indigo
+          text drops local contrast to about 2.5:1, so the field has to stop
+          short of the content at every width — and the first sizing did not:
+          measured against each text box, the 120vmin patch overlapped the
+          heading and button at 1440px and *everything* at 768px, which neither
+          screenshot made obvious. These reaches clear every element at 375,
+          768 and 1440. The rings still cross the page, which is fine: a 1-2px
+          stroke behind a letter costs almost nothing, a dense field costs a
+          fifth of its background. */}
+      <SpecklePatch
+        className="absolute right-[-8vmin] bottom-[-8vmin] h-[58vmin] w-[58vmin]"
+        shape="radial-gradient(farthest-side circle at 100% 100%, #000 0%, #000 34%, rgba(0,0,0,0.45) 62%, rgba(0,0,0,0) 86%)"
+        texture={SPECKLE_COARSE}
+        size="300px 300px"
       />
-
-      {/* The halftone, under the solid shapes so the disc caps its dense end. */}
-      <svg
-        className="absolute right-[-26vmin] bottom-[-26vmin] h-[104vmin] w-[104vmin]"
-        viewBox="0 0 1000 1000"
-      >
-        {HALFTONE_DOTS.map(({ x, y, r }) => (
-          <circle key={`${x}-${y}`} cx={x} cy={y} r={r} fill="#ff4000" />
-        ))}
-      </svg>
+      <SpecklePatch
+        className="absolute right-[-5vmin] bottom-[-5vmin] h-[40vmin] w-[40vmin]"
+        shape="radial-gradient(farthest-side circle at 100% 100%, #000 0%, #000 42%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0) 92%)"
+        texture={SPECKLE_FINE}
+        size="220px 220px"
+      />
 
       {/* Concentric on the bottom-right corner, so each shows as a quarter and
           the system continues past two edges instead of closing on the page. */}
@@ -151,23 +177,12 @@ function Backdrop() {
       {/* One small solid mark, diagonally opposite, to balance the corner mass. */}
       <div className="absolute top-[13%] right-[12%] h-2.5 w-2.5 rounded-full bg-[#ff4000]" />
 
-      {/* Mottle first, then grain, both above the shapes so they texture the
-          scarlet too rather than only the paper behind it. Multiply keeps them
-          from milking the white out. */}
+      {/* Grain over everything, so the gradient, the speckle and the solid
+          shapes all share one surface instead of looking like separate layers. */}
       <div
-        className="absolute inset-0 opacity-[0.11] mix-blend-multiply"
-        style={{ backgroundImage: GRAIN_COARSE, backgroundRepeat: "repeat" }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.26] mix-blend-multiply"
+        className="absolute inset-0 opacity-[0.2] mix-blend-multiply"
         style={{ backgroundImage: GRAIN_FINE, backgroundRepeat: "repeat" }}
       />
-
-      {/* Vignette last, so the sheet has edges. Neutral near-black rather than
-          a brand hue: at this strength #2a0a94 would still tip the corners
-          violet. Sits behind the content layer, so it darkens the paper and
-          never the type. */}
-      <div className="absolute inset-0 bg-[radial-gradient(125%_115%_at_50%_42%,transparent_52%,rgba(10,10,14,0.07)_100%)]" />
     </div>
   );
 }
@@ -243,13 +258,12 @@ export function ComingSoon() {
         />
 
         <div className="max-w-xl py-14 lg:py-0">
-          {/* Negative tracking on display type: letters read too far apart as
-              they grow, so large text tightens and small text opens up. The
-              label below does the opposite for the same reason. */}
           {/* The deep indigo, matching the wordmark above and the submit button
               below. Those three are the page's anchor and share one value; body
               copy steps back to the lighter indigo so the hierarchy still reads
-              without a second heading-weight colour competing with this one. */}
+              without a second heading-weight colour competing with this one.
+              Negative tracking on display type: letters read too far apart as
+              they grow, so large text tightens and small text opens up. */}
           <h1
             className="font-display text-[14vw] leading-[0.92] tracking-[-0.02em] sm:text-7xl lg:text-[5.5rem]"
             style={{ color: INK.deep }}
