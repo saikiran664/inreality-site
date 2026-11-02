@@ -29,25 +29,41 @@ type Status = "idle" | "sending" | "done" | "error";
  * indigos plus weight and size, which is where it should come from anyway.
  */
 const INK = {
-  /** 13.4:1 — display type and the small caps that need presence. */
+  /** 13.4:1 — the primary. The wordmark, the display type, the submit button
+   *  and the small caps all sit on this one, so the page has a single anchor
+   *  colour rather than two competing indigos. */
   deep: "#2a0a94",
-  /** 7.2:1 — body copy and links. */
+  /** 7.9:1 — the secondary. Body copy and links, a step back from the anchor. */
   mid: "#4b1fe8",
   /** 5.3:1 — placeholder only; still clears the body-text floor. */
   soft: "#6f4ced",
 } as const;
 
 /**
- * Film grain, as a tiling SVG turbulence pattern.
+ * Paper surface, built from two noise frequencies.
  *
  * A flat white field reads as unfinished at this size — there is very little on
- * the page to carry it. Grain gives the paper a surface without introducing a
- * colour: it is pure luminance noise, so it darkens the white slightly and
- * evenly instead of tinting it. That matters here, because every tinted option
- * on a white ground drifts toward either lavender or salmon.
+ * the page to carry it. Noise gives the paper a surface without introducing a
+ * colour, but only once it is desaturated: feTurbulence generates each channel
+ * independently, so on its own it is *chromatic* noise and lays faint coloured
+ * speckle over the page. The feColorMatrix flattens it to value-only, which is
+ * what makes it darken the white evenly instead of tinting it. That matters more
+ * here than it normally would, because
+ * every *tinted* way of adding depth to this page drifts toward either lavender
+ * (indigo at low alpha) or salmon (scarlet at low alpha), and both are out.
+ *
+ * Two frequencies rather than one. Fine noise alone reads as video grain
+ * sitting on top of the page; adding a low-frequency mottle underneath it gives
+ * the uneven absorption of real stock, so the two together read as paper rather
+ * than as a filter. The coarse layer is kept weak — it is doing the work of a
+ * material, and material is not supposed to be the thing you notice.
  */
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E\")";
+const GRAIN_FINE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
+/** Low-frequency mottle: the tooth of the stock, not the grain of the film. */
+const GRAIN_COARSE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='340' height='340' filter='url(%23m)'/%3E%3C/svg%3E\")";
 
 /**
  * The backdrop: one solid scarlet corner, two rings, and grain.
@@ -76,12 +92,23 @@ function Backdrop() {
       {/* One small solid mark, diagonally opposite, to balance the corner mass. */}
       <div className="absolute top-[13%] right-[12%] h-2.5 w-2.5 rounded-full bg-[#ff4000]" />
 
-      {/* Grain sits above the shapes so it textures the scarlet too, not just
-          the paper behind it. Multiply keeps it from milking the white out. */}
+      {/* Mottle first, then grain, both above the shapes so they texture the
+          scarlet too rather than only the paper behind it. Multiply keeps them
+          from milking the white out. */}
+      <div
+        className="absolute inset-0 opacity-[0.07] mix-blend-multiply"
+        style={{ backgroundImage: GRAIN_COARSE, backgroundRepeat: "repeat" }}
+      />
       <div
         className="absolute inset-0 opacity-[0.17] mix-blend-multiply"
-        style={{ backgroundImage: GRAIN, backgroundRepeat: "repeat" }}
+        style={{ backgroundImage: GRAIN_FINE, backgroundRepeat: "repeat" }}
       />
+
+      {/* Vignette last, so the sheet has edges. Neutral near-black rather than
+          a brand hue: at this strength #2a0a94 would still tip the corners
+          violet, and a vignette is meant to be felt, not seen. Sits behind the
+          content layer, so it darkens the paper and never the type. */}
+      <div className="absolute inset-0 bg-[radial-gradient(125%_115%_at_50%_42%,transparent_52%,rgba(10,10,14,0.06)_100%)]" />
     </div>
   );
 }
@@ -160,6 +187,10 @@ export function ComingSoon() {
           {/* Negative tracking on display type: letters read too far apart as
               they grow, so large text tightens and small text opens up. The
               label below does the opposite for the same reason. */}
+          {/* The deep indigo, matching the wordmark above and the submit button
+              below. Those three are the page's anchor and share one value; body
+              copy steps back to the lighter indigo so the hierarchy still reads
+              without a second heading-weight colour competing with this one. */}
           <h1
             className="font-display text-[14vw] leading-[0.92] tracking-[-0.02em] sm:text-7xl lg:text-[5.5rem]"
             style={{ color: INK.deep }}
