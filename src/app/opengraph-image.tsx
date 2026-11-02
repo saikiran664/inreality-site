@@ -13,15 +13,28 @@ export const dynamic = "force-static";
 /**
  * The real wordmark, inlined at build time.
  *
- * Satori has no access to the site's CSS or webfonts, so the previous version
- * approximated the logo by setting the word in a system sans. Reading the
- * actual artwork off disk and passing it as a data URI gets the real mark into
- * the card. This runs in Node at build, so the file read is safe even under
- * `output: "export"`.
+ * Satori has no access to the site's CSS or webfonts, so setting the word in a
+ * system sans only approximates the logo; reading the artwork off disk gets the
+ * real mark into the card. `process.cwd()` is the documented way to reach
+ * `public/` from an image route, and it resolves correctly under `next dev`,
+ * `next build` and on Vercel.
+ *
+ * It resolves to the wrong place when the process was started from some other
+ * directory, so the read is guarded: an unreadable file falls back to the text
+ * wordmark. The earlier version read at module scope with no guard, which threw
+ * ENOENT during module evaluation and took down the route — and because nothing
+ * renders an OG card during `next build`, the failure only ever appeared later,
+ * in the browser. A card set in the wrong typeface is a blemish; a card that
+ * crashes the route is a broken link preview.
  */
-const LOGO_SRC = `data:image/png;base64,${fs
-  .readFileSync(path.join(process.cwd(), "public", "logo.png"))
-  .toString("base64")}`;
+const LOGO_SRC = (() => {
+  try {
+    const bytes = fs.readFileSync(path.join(process.cwd(), "public", "logo.png"));
+    return `data:image/png;base64,${bytes.toString("base64")}`;
+  } catch {
+    return null;
+  }
+})();
 
 /**
  * Composed for the CROP, not for the canvas.
@@ -86,8 +99,23 @@ export default function OpengraphImage() {
             Personal Branding
           </div>
 
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={LOGO_SRC} alt="Inreality" width={520} height={61} style={{ marginTop: 28 }} />
+          {LOGO_SRC ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={LOGO_SRC} alt="Inreality" width={520} height={61} style={{ marginTop: 28 }} />
+          ) : (
+            <div
+              style={{
+                marginTop: 28,
+                fontSize: 86,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                color: "#f4f2f9",
+                display: "flex",
+              }}
+            >
+              Inreality
+            </div>
+          )}
 
           <div
             style={{

@@ -16,13 +16,25 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const LINKS = [
   { href: "/services", label: "Services" },
   { href: "/journey", label: "Journey" },
-  { href: "/#philosophy", label: "Philosophy" },
-  { href: "/#why", label: "Why us" },
-  { href: "/#contact", label: "Contact" },
+  { href: "#philosophy", label: "Philosophy", section: true },
+  { href: "#why", label: "Why us", section: true },
+  { href: "#contact", label: "Contact", section: true },
 ];
 
-export function SiteHeader() {
+/**
+ * `base` is which page the section anchors belong to.
+ *
+ * While the holding page occupies `/`, those sections live at /preview, and a
+ * link to "/#why" would scroll the holding page looking for an anchor that is
+ * not there. Pages carrying the full site pass their own path instead. At
+ * launch this goes back to its default and nothing else changes.
+ */
+export function SiteHeader({ base = "/" }: { base?: string }) {
   const [scrolled, setScrolled] = useState(false);
+
+  const links = LINKS.map((link) =>
+    link.section ? { ...link, href: `${base === "/" ? "/" : base}${link.href}` } : link,
+  );
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -54,7 +66,7 @@ export function SiteHeader() {
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex lg:gap-9">
-            {LINKS.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -66,7 +78,7 @@ export function SiteHeader() {
           </nav>
 
           <Link
-            href="/#contact"
+            href={`${base === "/" ? "/" : base}#contact`}
             className="btn-scarlet shrink-0 rounded-full px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wider transition-transform duration-300 hover:scale-[1.05] sm:px-6 sm:py-2.5 sm:text-sm"
           >
             Work With Us
@@ -85,7 +97,7 @@ export function SiteHeader() {
           of the screen instead of stopping inside the padding.
         */}
         <nav className="scrollbar-none -mx-5 mt-2.5 flex items-center gap-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6 md:hidden">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}

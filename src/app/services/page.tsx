@@ -27,6 +27,10 @@ export const metadata: Metadata = {
     "Inreality",
   ],
   alternates: { canonical: "/services" },
+  // Noindexed while the holding page occupies `/`. These pages still
+  // work and are still linked from /preview; they are simply not
+  // something to have Google index ahead of the real front door.
+  robots: { index: false, follow: false },
   openGraph: {
     title: "Services | Inreality",
     description: DESCRIPTION,

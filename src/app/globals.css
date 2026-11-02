@@ -96,6 +96,22 @@ body {
   overflow-x: clip;
 }
 
+/* The holding page is the one light page on a site whose tokens are all dark.
+   Painting white on its <main> alone leaves BODY at --background (#07050f), and
+   the page is exactly viewport-height, so the void shows through wherever the
+   browser paints past the element: rubber-band overscroll on macOS and iOS, and
+   the mobile browser chrome, which tints itself from the body colour.
+
+   Keyed off the page's own marker rather than a class on <body>, because <body>
+   is written by the root layout, which /preview and the rest still need dark.
+   :has() lets the page opt its own document into the light palette with no
+   layout split and no class-toggling flash on first paint. Where :has() is
+   unsupported the rule simply drops and the page looks as it did before. */
+body:has([data-page="coming-soon"]) {
+  background: #ffffff;
+  color: #2a0a94;
+}
+
 ::selection {
   background: var(--brand-scarlet);
   color: var(--brand-void);

@@ -14,7 +14,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/thank-you"],
+      // /preview holds the finished site while the holding page occupies `/`.
+      // The page carries a noindex of its own; this keeps crawlers from
+      // spending the domain's early crawl budget on it in the first place.
+      disallow: ["/thank-you", "/preview"],
     },
     sitemap: `${BRAND.siteUrl}/sitemap.xml`,
   };
