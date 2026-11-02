@@ -66,23 +66,82 @@ const GRAIN_COARSE =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='340' height='340' filter='url(%23m)'/%3E%3C/svg%3E\")";
 
 /**
- * The backdrop: one solid scarlet corner, two rings, and grain.
+ * A scarlet halftone fanning out from the bottom-right corner.
  *
- * Every element here is flat and at full strength, which is the whole point.
- * The first attempt built this from faded arcs — scarlet at 7-55% opacity — and
- * it failed the same way the earlier streaks did: #ff4000 feathered over white
- * is salmon, and thin salmon lines crossing a white page read as scratches
- * rather than as structure. Depth now comes from mass, overlap and scale, the
- * way flat design gets depth, rather than from opacity pretending to be
- * distance.
+ * This is the one way to get scarlet depth onto white without it turning
+ * salmon, and it is worth being precise about why. Fading a scarlet shape by
+ * *opacity* blends it toward white, and #ff4000 blended toward white is pink —
+ * which is what sank the earlier faded arcs and the streaks before them. A
+ * halftone fades by *size* instead: every dot stays fully saturated #ff4000,
+ * and the field lightens because the dots get smaller and leave more paper
+ * between them. Squint and it reads as a gradient; look closely and there is
+ * no pink anywhere on the page.
  *
- * Three elements, not six. The quarter-disc anchors the corner, the two rings
- * give it rhythm, and that is the whole system — a fourth and fifth ring is
- * where it started looking like a target.
+ * Dot radius falls off with distance from the corner and hits zero around 60%
+ * of the way across, so the field thins out well before it reaches the type.
+ */
+const HALFTONE_DOTS = (() => {
+  const dots: { x: number; y: number; r: number }[] = [];
+  const STEP = 40;
+  const DIAG = Math.hypot(1000, 1000);
+  for (let gx = 0; gx <= 1000; gx += STEP) {
+    for (let gy = 0; gy <= 1000; gy += STEP) {
+      const d = Math.hypot(1000 - gx, 1000 - gy) / DIAG;
+      const r = (1 - d * 1.65) * 9.5;
+      if (r > 0.45) dots.push({ x: gx, y: gy, r: +r.toFixed(2) });
+    }
+  }
+  return dots;
+})();
+
+/**
+ * The backdrop.
+ *
+ * Built in layers, bottom to top: a ruled dot grid that gives the white a
+ * measurable surface, the scarlet halftone and corner shapes, then paper noise
+ * and a vignette over the top of everything.
+ *
+ * The grid and rules are *neutral*, not brand-tinted, and that is deliberate
+ * rather than timid. Indigo at the alpha a hairline needs composites to
+ * lavender on white, which is the one hue this brand has ruled out; neutral
+ * grey at the same alpha reads as drafting stock and carries no hue at all. So
+ * the structural layers stay achromatic and every bit of colour on the page
+ * comes from scarlet at full strength.
  */
 function Backdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Dot grid: the base surface. Fine enough to read as tooth rather than
+          as polka dots, dense enough that the page is no longer blank. */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(10,10,14,0.17) 1.1px, transparent 1.4px)",
+          backgroundSize: "26px 26px",
+        }}
+      />
+
+      {/* Horizontal rules over the grid, on a coarser pitch: a baseline grid,
+          the way a page of editorial stock is ruled. */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(to bottom, rgba(10,10,14,0.07) 0 1px, transparent 1px 104px)",
+        }}
+      />
+
+      {/* The halftone, under the solid shapes so the disc caps its dense end. */}
+      <svg
+        className="absolute right-[-26vmin] bottom-[-26vmin] h-[104vmin] w-[104vmin]"
+        viewBox="0 0 1000 1000"
+      >
+        {HALFTONE_DOTS.map(({ x, y, r }) => (
+          <circle key={`${x}-${y}`} cx={x} cy={y} r={r} fill="#ff4000" />
+        ))}
+      </svg>
+
       {/* Concentric on the bottom-right corner, so each shows as a quarter and
           the system continues past two edges instead of closing on the page. */}
       <div className="absolute right-[-19vmin] bottom-[-19vmin] h-[38vmin] w-[38vmin] rounded-full bg-[#ff4000]" />
@@ -96,19 +155,19 @@ function Backdrop() {
           scarlet too rather than only the paper behind it. Multiply keeps them
           from milking the white out. */}
       <div
-        className="absolute inset-0 opacity-[0.07] mix-blend-multiply"
+        className="absolute inset-0 opacity-[0.11] mix-blend-multiply"
         style={{ backgroundImage: GRAIN_COARSE, backgroundRepeat: "repeat" }}
       />
       <div
-        className="absolute inset-0 opacity-[0.17] mix-blend-multiply"
+        className="absolute inset-0 opacity-[0.26] mix-blend-multiply"
         style={{ backgroundImage: GRAIN_FINE, backgroundRepeat: "repeat" }}
       />
 
       {/* Vignette last, so the sheet has edges. Neutral near-black rather than
           a brand hue: at this strength #2a0a94 would still tip the corners
-          violet, and a vignette is meant to be felt, not seen. Sits behind the
-          content layer, so it darkens the paper and never the type. */}
-      <div className="absolute inset-0 bg-[radial-gradient(125%_115%_at_50%_42%,transparent_52%,rgba(10,10,14,0.06)_100%)]" />
+          violet. Sits behind the content layer, so it darkens the paper and
+          never the type. */}
+      <div className="absolute inset-0 bg-[radial-gradient(125%_115%_at_50%_42%,transparent_52%,rgba(10,10,14,0.07)_100%)]" />
     </div>
   );
 }
@@ -206,8 +265,7 @@ export function ComingSoon() {
             className="mt-7 max-w-md font-body text-base leading-relaxed font-medium sm:text-lg"
             style={{ color: INK.mid }}
           >
-            Personal branding, built on story first. We are putting the finishing
-            touches to the site.
+            Personal branding, built on story first.
           </p>
 
           <form onSubmit={onSubmit} className="mt-9 max-w-md">
