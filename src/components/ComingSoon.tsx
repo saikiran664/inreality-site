@@ -35,7 +35,7 @@ type Status = "idle" | "sending" | "done" | "error";
  * Both values are in `em` so they scale with the font size instead of drifting
  * apart between breakpoints.
  */
-const TRACKING = "0.38em";
+const TRACKING = "0.32em";
 const TRACKING_RECENTRE = TRACKING;
 
 /**
@@ -127,12 +127,24 @@ export function ComingSoon() {
             />
           </h1>
 
-          {/* Directly beneath the wordmark, small and tracked wide. Anton keeps
-              the display voice while the size drops; it ships only weight 400,
-              which clears the 400-or-heavier floor for text under 18px with no
-              risk of the browser synthesising a weight the family lacks. */}
+          {/* Directly beneath the wordmark, small and tracked wide — in the
+              BODY face, not the display one.
+
+              This was Anton, and it did not sit right. The wordmark and Anton
+              are both heavy condensed caps, so a small tracked Anton line reads
+              as a shrunken second logo competing with the first rather than as
+              a label supporting it; near-identical faces look like an accident
+              where a contrasting pair looks deliberate. Condensed letterforms
+              also track badly: narrow glyphs separated by wide gaps lose their
+              rhythm, which is why 0.38em looked loose rather than open.
+
+              Plus Jakarta Sans has normal proportions and opens up cleanly, so
+              the tracking comes down slightly to 0.32em and still reads wider.
+              Weight 600 keeps it clear of the 400-or-heavier floor for text
+              under 18px, and sits a step below the form label's 800 so the two
+              small caps lines do not read as equals. */}
           <p
-            className="mt-6 font-display text-base leading-[1.2] text-paper uppercase sm:mt-7 sm:text-lg"
+            className="mt-5 font-body text-sm leading-[1.2] font-semibold text-paper uppercase sm:mt-6 sm:text-base"
             style={{ letterSpacing: TRACKING, textIndent: TRACKING_RECENTRE }}
           >
             Launching soon
