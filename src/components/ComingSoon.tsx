@@ -18,25 +18,25 @@ const NOTIFY_ENDPOINT = process.env.NEXT_PUBLIC_NOTIFY_ENDPOINT ?? "";
 type Status = "idle" | "sending" | "done" | "error";
 
 /**
- * Tracking on the LAUNCHING SOON line, and the indent that re-centres it.
+ * Tracking on the LAUNCHING SOON line, and the negative margin that absorbs it.
  *
- * Letter-spacing is added after *every* character including the last, so a
- * centred line carries one full space of trailing air inside its line box. The
- * glyphs therefore sit half a space left of true centre — at this much tracking
- * that is a visible misalignment against the wordmark above it.
+ * Letter-spacing is added after *every* character including the last, so the
+ * line box carries one full space of trailing air past the final glyph. Between
+ * two flanking rules that shows up as asymmetry: the right-hand rule sits a
+ * whole tracking-space further from the last letter than the left-hand one does
+ * from the first.
  *
- * The correction is the FULL tracking value, not half of it, which is the
- * counter-intuitive part. `text-indent` widens the line box, and a centred line
- * re-centres that wider box, so the glyphs only move by half of whatever indent
- * is applied. Measured at 18px with 6.84px of tracking: indent 0 put the glyph
- * midpoint 3.41px left of the axis (exactly half the tracking, as predicted),
- * indent 3.42px left it 1.71px out, and indent 6.84px landed it on 0.00px.
+ * Pulling the right edge back in by exactly the tracking makes the box end
+ * where the glyphs end, so a symmetric flex gap renders symmetrically. This
+ * replaces the `text-indent` correction the line used when it was centred text
+ * in a full-width block — that fix re-centred a trailing space, this one
+ * removes it, and only the second is right once something sits beside the text.
  *
- * Both values are in `em` so they scale with the font size instead of drifting
- * apart between breakpoints.
+ * Both values are in `em`, so they scale with the font size rather than
+ * drifting apart between breakpoints.
  */
 const TRACKING = "0.32em";
-const TRACKING_RECENTRE = TRACKING;
+const TRACKING_TRAILING = `-${TRACKING}`;
 
 /**
  * The holding page, in the site's own language.
@@ -156,21 +156,30 @@ export function ComingSoon() {
               Weight 600 keeps it clear of the 400-or-heavier floor for text
               under 18px, and sits a step below the form label's 800 so the two
               small caps lines do not read as equals. */}
-          <p
-            className="mt-5 font-body text-sm leading-[1.2] font-semibold text-paper uppercase sm:mt-6 sm:text-base"
-            style={{ letterSpacing: TRACKING, textIndent: TRACKING_RECENTRE }}
-          >
-            Launching soon
-          </p>
-
-          <div className="mt-8 h-1.5 w-20 rounded-full bg-scarlet sm:w-28" />
+          {/* The scarlet now brackets the status line instead of floating under
+              it. It used to be a single bar on its own row — an accent that
+              made sense when the layout was left-aligned and it sat under the
+              left edge of the heading, and read as a stray dash once everything
+              centred, because it related to nothing. Flanking rules give it a
+              job: they belong to this line, and they set it apart from the
+              wordmark above without needing a separate element in the stack. */}
+          <div className="mt-5 flex items-center justify-center gap-4 sm:mt-6 sm:gap-5">
+            <span aria-hidden="true" className="h-0.5 w-8 rounded-full bg-scarlet sm:w-12" />
+            <p
+              className="font-body text-sm leading-[1.2] font-semibold text-paper uppercase sm:text-base"
+              style={{ letterSpacing: TRACKING, marginRight: TRACKING_TRAILING }}
+            >
+              Launching soon
+            </p>
+            <span aria-hidden="true" className="h-0.5 w-8 rounded-full bg-scarlet sm:w-12" />
+          </div>
 
           {/* `text-balance` evens the two lines rather than leaving a short
               widow. It is a one-sentence description, not a paragraph, which is
               where balance belongs; `pretty` is the paragraph tool.
               Leading sits at 1.55 — inside the 1.5–1.6 band for body copy,
               where Tailwind's `leading-relaxed` (1.625) is just outside it. */}
-          <p className="mt-7 max-w-md text-balance font-body text-base leading-[1.55] font-medium text-accent-pale sm:text-lg">
+          <p className="mt-8 max-w-md text-balance font-body text-base leading-[1.55] font-medium text-accent-pale sm:mt-9 sm:text-lg">
             Personal branding, built on story first.
           </p>
 
