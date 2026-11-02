@@ -7,11 +7,12 @@ import { BRAND } from "@/lib/data";
 /**
  * Where the notify form posts.
  *
- * Unset until a form service is wired up. That is deliberate rather than a
- * placeholder to forget: a form that POSTs nowhere still *looks* like it
- * worked, and every address typed into it is lost silently. With no endpoint
- * configured the form hands off to the mail client instead, which is less
- * slick but cannot swallow a signup.
+ * Unset until a form service is wired up, and until it is, this form captures
+ * nothing. The mail-client fallback that used to cover that case is gone, so
+ * the only thing left to get right is failing loudly: with no endpoint the
+ * submit reports an error rather than a thank-you, because a form that claims
+ * success while dropping the address is worse than one that visibly does not
+ * work.
  */
 const NOTIFY_ENDPOINT = process.env.NEXT_PUBLIC_NOTIFY_ENDPOINT ?? "";
 
@@ -63,13 +64,9 @@ export function ComingSoon() {
     const address = email.trim();
     if (!address) return;
 
+    // Nowhere to send it, so say so instead of showing a thank-you.
     if (!NOTIFY_ENDPOINT) {
-      // No service configured: hand the address to the mail client so it
-      // reaches a human instead of disappearing.
-      window.location.href = `mailto:${BRAND.contactEmail}?subject=${encodeURIComponent(
-        "Notify me when Inreality launches",
-      )}&body=${encodeURIComponent(`Please let me know when you launch.\n\n${address}`)}`;
-      setStatus("done");
+      setStatus("error");
       return;
     }
 
@@ -100,22 +97,14 @@ export function ComingSoon() {
           prefers-reduced-motion block in globals.css. */}
       <div aria-hidden="true" className="gradient-field gradient-field--indigo" />
 
-      {/* The lockup centres on the VIEWPORT, not on whatever is left above the
-          mail link. Previously a two-row grid gave the link its own row plus a
-          gap, so the lockup centred inside a box shorter than the screen and
-          sat visibly high. Taking the link out of flow puts the lockup's centre
-          on the real centre.
-
-          The media query is the guard that makes that safe: on a short window a
-          centred lockup reaches far enough down to touch an absolutely-
-          positioned link — measured at 1440x500 it overlapped by 9px. The extra
-          bottom padding shrinks the box it centres in, lifting it clear.
-
-          It has to be written as a raw `@media(max-height:...)`. Tailwind's
-          `max-[620px]:` shorthand is a max-WIDTH variant, so the first attempt
-          at this guard never fired on a wide-but-short window, which is exactly
-          the case it existed for. */}
-      <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-10 text-center [@media(max-height:620px)]:pb-24 sm:px-10 sm:py-14 lg:px-20 lg:py-16">
+      {/* One centred column, and nothing else in the page's flow — so the
+          lockup centres on the viewport directly. The absolute positioning and
+          the `@media(max-height:...)` guard that used to live here existed only
+          to keep a bottom-anchored mail link from colliding with the centred
+          lockup on a short window. With that link gone there is nothing to
+          collide with, and plain centring is both correct and safe at any
+          height. */}
+      <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-20 lg:py-16">
         <div className="flex flex-col items-center">
           {/* The wordmark IS the heading. It used to be a bare <img> pinned to
               the top with "LAUNCHING SOON." as the h1, which inverted the
@@ -174,16 +163,7 @@ export function ComingSoon() {
             <span aria-hidden="true" className="h-0.5 w-8 rounded-full bg-scarlet sm:w-12" />
           </div>
 
-          {/* `text-balance` evens the two lines rather than leaving a short
-              widow. It is a one-sentence description, not a paragraph, which is
-              where balance belongs; `pretty` is the paragraph tool.
-              Leading sits at 1.55 — inside the 1.5–1.6 band for body copy,
-              where Tailwind's `leading-relaxed` (1.625) is just outside it. */}
-          <p className="mt-8 max-w-md text-balance font-body text-base leading-[1.55] font-medium text-accent-pale sm:mt-9 sm:text-lg">
-            Personal branding, built on story first.
-          </p>
-
-          <form onSubmit={onSubmit} className="mt-9 w-full max-w-md">
+          <form onSubmit={onSubmit} className="mt-10 w-full max-w-md sm:mt-11">
             {/* 12px, not the 11px this was: below about 12px UI text stops
                 being comfortably readable, and the size is in rem so the
                 reader's own browser font size still scales it. */}
@@ -238,18 +218,15 @@ export function ComingSoon() {
               className="mt-3 min-h-5 font-body text-xs leading-[1.5] font-medium text-paper sm:text-sm"
             >
               {status === "done" && "Thank you. We will be in touch at launch."}
-              {status === "error" &&
-                `Something went wrong. Email us at ${BRAND.contactEmail} instead.`}
+              {/* Deliberately generic. The visitor cannot act on the difference
+                  between an unreachable service and an unconfigured one, and
+                  the address they would have been pointed to is no longer on
+                  the page. */}
+              {status === "error" && "Something went wrong. Please try again shortly."}
             </p>
           </form>
         </div>
 
-        <a
-          href={`mailto:${BRAND.contactEmail}`}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 rounded font-body text-sm font-semibold text-paper underline decoration-scarlet decoration-2 underline-offset-4 transition-colors hover:text-scarlet focus-visible:ring-2 focus-visible:ring-scarlet focus-visible:ring-offset-2 focus-visible:ring-offset-void focus-visible:outline-none sm:bottom-14 lg:bottom-16"
-        >
-          {BRAND.contactEmail}
-        </a>
       </div>
     </main>
   );
