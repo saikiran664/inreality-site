@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local editor/agent config
+# launch.json holds absolute paths to this machine's node and python binaries,
+# so it is per-developer rather than shared, and it put the OS username into a
+# public repo for no benefit.
+.claude/
